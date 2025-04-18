@@ -1,0 +1,71 @@
+﻿<Window x:Class="ClipSyncWindows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="ClipSync" Height="450" Width="500">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   Text="ClipSync" 
+                   FontSize="24" 
+                   FontWeight="SemiBold" 
+                   Margin="0,0,0,15" 
+                   HorizontalAlignment="Center"/>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" 
+                       Text="Select devices to share clipboard with:" 
+                       Margin="0,0,0,10"/>
+
+            <ListView Grid.Row="1" 
+                      Name="DevicesListView" 
+                      SelectionMode="Multiple">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="5">
+                            <TextBlock Text="{Binding DeviceName}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding DeviceAddress}" FontSize="11" Foreground="#666"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,15">
+            <Button x:Name="RefreshDevicesButton" Content="Refresh Devices" Padding="10,5" Margin="0,0,10,0"/>
+            <Button x:Name="StartServiceButton" Content="Start Service" Padding="10,5" Margin="0,0,10,0"/>
+            <Button x:Name="StopServiceButton" Content="Stop Service" Padding="10,5"/>
+        </StackPanel>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Column="0" 
+                       Name="StatusTextBlock" 
+                       Text="Ready" 
+                       VerticalAlignment="Center"/>
+            
+            <Button Grid.Column="1" 
+                    x:Name="ShareButton" 
+                    Content="Share Clipboard" 
+                    Padding="15,10"
+                    IsEnabled="False"/>
+        </Grid>
+    </Grid>
+</Window>
