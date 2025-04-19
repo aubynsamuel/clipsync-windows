@@ -1,71 +1,320 @@
-﻿<Window x:Class="ClipSyncWindows.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        Title="ClipSync" Height="450" Width="500">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+﻿<Window
+    x:Class="ClipSyncWindows.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="ClipSync"
+    Width="550"
+    Height="650"
+    Background="#F5F7FA"
+    mc:Ignorable="d">
 
-        <TextBlock Grid.Row="0" 
-                   Text="ClipSync" 
-                   FontSize="24" 
-                   FontWeight="SemiBold" 
-                   Margin="0,0,0,15" 
-                   HorizontalAlignment="Center"/>
+    <Window.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#6366F1" />
+            <!--  Default background  -->
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="15,10" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <!--  Hover background - applies to all based styles  -->
+                                <Setter Property="Background" Value="#4F46E5" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#9CA3AF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <Grid Grid.Row="1">
+        <!--  Style for the Refresh Button  -->
+        <Style
+            x:Key="RefreshButtonStyle"
+            BasedOn="{StaticResource ModernButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="#4B5563" />
+            <Setter Property="Foreground" Value="#F3F4F6" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF3C4450" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  Style for the Stop Button  -->
+        <Style
+            x:Key="StopButtonStyle"
+            BasedOn="{StaticResource ModernButton}"
+            TargetType="Button">
+            <Setter Property="Background" Value="#EF4444" />
+            <Setter Property="Foreground" Value="#FFFFFF" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#DC2626" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  Custom ScrollViewer Style for Smooth Scrolling  -->
+        <Style x:Key="SmoothScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="PanningMode" Value="VerticalOnly" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ScrollContentPresenter Grid.Column="0" />
+
+                            <ScrollBar
+                                Name="PART_VerticalScrollBar"
+                                Grid.Column="1"
+                                Maximum="{TemplateBinding ScrollableHeight}"
+                                ViewportSize="{TemplateBinding ViewportHeight}"
+                                Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                Value="{TemplateBinding VerticalOffset}" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  Custom ListBox ScrollViewer  -->
+        <Style x:Key="SmoothScrollListView" TargetType="ListView">
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalOnly" />
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+        </Style>
+    </Window.Resources>
+
+    <Border
+        Margin="10"
+        Background="White"
+        CornerRadius="12">
+        <Border.Effect>
+            <DropShadowEffect
+                BlurRadius="15"
+                Opacity="0.1"
+                ShadowDepth="0"
+                Color="Black" />
+        </Border.Effect>
+
+        <Grid Margin="25">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" 
-                       Text="Select devices to share clipboard with:" 
-                       Margin="0,0,0,10"/>
+            <!--  Header with Gradient  -->
+            <Border
+                Grid.Row="0"
+                Padding="0,0,0,15"
+                Background="#FFFFFF">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        HorizontalAlignment="Center"
+                        FontSize="28"
+                        FontWeight="Bold"
+                        Text="ClipSync">
+                        <TextBlock.Foreground>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Offset="0.0" Color="#6366F1" />
+                                <GradientStop Offset="1.0" Color="#8B5CF6" />
+                            </LinearGradientBrush>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="12"
+                        Foreground="#6B7280"
+                        Text="Seamless clipboard sharing across devices" />
+                </StackPanel>
+            </Border>
 
-            <ListView Grid.Row="1" 
-                      Name="DevicesListView" 
-                      SelectionMode="Multiple">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="5">
-                            <TextBlock Text="{Binding DeviceName}" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding DeviceAddress}" FontSize="11" Foreground="#666"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <!--  Main Content Area  -->
+            <Grid Grid.Row="1" Margin="0,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Margin="0,0,0,10"
+                    FontWeight="Medium"
+                    Foreground="#4B5563"
+                    Text="Select devices to share clipboard with:" />
+
+                <Border
+                    Grid.Row="1"
+                    Background="#F9FAFB"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <ListView
+                        Name="DevicesListView"
+                        Grid.Row="1"
+                        Margin="5"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        SelectionMode="Multiple"
+                        Style="{StaticResource SmoothScrollListView}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Padding" Value="5" />
+                                <Setter Property="Margin" Value="0,4" />
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="BorderBrush" Value="#E5E7EB" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#EEF2FF" />
+                                        <Setter Property="BorderBrush" Value="#6366F1" />
+                                    </Trigger>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#F9FAFB" />
+                                        <Setter Property="BorderBrush" Value="#D1D5DB" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.Template>
+                            <ControlTemplate TargetType="ListView">
+                                <ScrollViewer
+                                    Padding="{TemplateBinding Padding}"
+                                    Focusable="False"
+                                    Style="{StaticResource SmoothScrollViewer}">
+                                    <ItemsPresenter />
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </ListView.Template>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="5">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border
+                                        Grid.Column="0"
+                                        Width="40"
+                                        Height="40"
+                                        Margin="0,0,12,0"
+                                        Background="#EEF2FF"
+                                        CornerRadius="20">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="16"
+                                            FontWeight="Bold"
+                                            Foreground="#6366F1"
+                                            Text="{Binding DeviceName, StringFormat={}{0:0}}" />
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Foreground="#111827"
+                                            Text="{Binding DeviceName}" />
+                                        <TextBlock
+                                            Margin="0,3,0,0"
+                                            FontSize="12"
+                                            Foreground="#6B7280"
+                                            Text="{Binding DeviceAddress}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Border>
+            </Grid>
+
+            <!--  Button Controls  -->
+            <StackPanel
+                Grid.Row="2"
+                Margin="0,15,0,20"
+                HorizontalAlignment="Center"
+                Orientation="Horizontal">
+                <Button
+                    x:Name="RefreshDevicesButton"
+                    Margin="0,0,10,0"
+                    Content="Refresh Devices"
+                    Style="{StaticResource RefreshButtonStyle}" />
+
+                <Button
+                    x:Name="StartServiceButton"
+                    Margin="0,0,10,0"
+                    Content="Start Service"
+                    Style="{StaticResource ModernButton}" />
+
+                <Button
+                    x:Name="StopServiceButton"
+                    Content="Stop Service"
+                    Style="{StaticResource StopButtonStyle}" />
+            </StackPanel>
+
+            <!--  Status Bar  -->
+            <Border
+                Grid.Row="3"
+                Padding="15,12"
+                Background="#F3F4F6"
+                CornerRadius="6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Ellipse
+                            Width="10"
+                            Height="10"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            Fill="#10B981" />
+                        <TextBlock
+                            Name="StatusTextBlock"
+                            VerticalAlignment="Center"
+                            FontWeight="Medium"
+                            Foreground="#4B5563"
+                            Text="Ready" />
+                    </StackPanel>
+
+                    <Button
+                        x:Name="ShareButton"
+                        Grid.Column="1"
+                        Content="Share Clipboard"
+                        IsEnabled="False"
+                        Style="{StaticResource ModernButton}" />
+                </Grid>
+            </Border>
         </Grid>
-
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,15,0,15">
-            <Button x:Name="RefreshDevicesButton" Content="Refresh Devices" Padding="10,5" Margin="0,0,10,0"/>
-            <Button x:Name="StartServiceButton" Content="Start Service" Padding="10,5" Margin="0,0,10,0"/>
-            <Button x:Name="StopServiceButton" Content="Stop Service" Padding="10,5"/>
-        </StackPanel>
-
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.Column="0" 
-                       Name="StatusTextBlock" 
-                       Text="Ready" 
-                       VerticalAlignment="Center"/>
-            
-            <Button Grid.Column="1" 
-                    x:Name="ShareButton" 
-                    Content="Share Clipboard" 
-                    Padding="15,10"
-                    IsEnabled="False"/>
-        </Grid>
-    </Grid>
+    </Border>
 </Window>

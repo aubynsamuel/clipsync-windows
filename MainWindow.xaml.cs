@@ -1,14 +1,8 @@
-﻿using InTheHand.Net;
-using InTheHand.Net.Bluetooth;
-using InTheHand.Net.Sockets;
+﻿using InTheHand.Net.Sockets;
 using Newtonsoft.Json;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -20,22 +14,22 @@ namespace ClipSyncWindows
         private BluetoothListener? _listener; // Make nullable
         private CancellationTokenSource? _cancellationTokenSource; // Make nullable
         private bool _isServiceRunning = false;
-        private static readonly Guid ServiceUuid = new Guid("8ce255c0-200a-11e0-ac64-0800200c9a66");
+        private static readonly Guid ServiceUuid = new("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
         public MainWindow()
         {
             InitializeComponent();
             DevicesListView.ItemsSource = _devices;
-            
+
             RefreshDevicesButton.Click += RefreshDevicesButton_Click;
             StartServiceButton.Click += StartServiceButton_Click;
             StopServiceButton.Click += StopServiceButton_Click;
             ShareButton.Click += ShareButton_Click;
-            
+
             LoadPairedDevices();
-            
+
             // Event handler for selection change
-            DevicesListView.SelectionChanged += (s, e) => 
+            DevicesListView.SelectionChanged += (s, e) =>
             {
                 ShareButton.IsEnabled = DevicesListView.SelectedItems.Count > 0;
             };
@@ -55,12 +49,12 @@ namespace ClipSyncWindows
 
                 using var client = new BluetoothClient();
                 var devices = client.PairedDevices;
-                
+
                 foreach (var dev in devices)
                 {
                     _devices.Add(dev);
                 }
-                
+
                 StatusTextBlock.Text = $"Paired devices loaded: {_devices.Count}";
             }
             catch (Exception ex)
@@ -83,19 +77,19 @@ namespace ClipSyncWindows
                 StartServiceButton.IsEnabled = false;
                 RefreshDevicesButton.IsEnabled = false;
                 StopServiceButton.IsEnabled = true;
-                
+
                 StatusTextBlock.Text = "Starting service...";
-                
+
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
-                
+
                 // Start listener
                 _listener = new BluetoothListener(ServiceUuid);
                 _listener.Start();
                 _isServiceRunning = true;
-                
+
                 StatusTextBlock.Text = "Service: Listening for Android devices...";
-                
+
                 // Run listening loop on a separate task
                 await Task.Run(() => ListeningLoop(token), token);
             }
@@ -122,7 +116,7 @@ namespace ClipSyncWindows
                 _cancellationTokenSource?.Cancel();
                 _listener?.Stop();
                 _isServiceRunning = false;
-                
+
                 Dispatcher.Invoke(() =>
                 {
                     StartServiceButton.IsEnabled = true;
@@ -161,23 +155,23 @@ namespace ClipSyncWindows
 
                     using var stream = client.GetStream();
                     using var reader = new StreamReader(stream);
-                    
+
                     // Read the JSON message
                     var jsonText = reader.ReadToEnd();
-                    
+
                     try
                     {
                         var clipboardData = JsonConvert.DeserializeObject<ClipboardData>(jsonText);
-                        
+
                         if (clipboardData?.Clip != null)
                         {
                             Dispatcher.Invoke(() =>
                             {
                                 Clipboard.SetText(clipboardData.Clip);
                                 StatusTextBlock.Text = "Received clipboard text & copied!";
-                                
+
                                 // Instead of using WinForms notification, use a simpler approach
-                                ShowSimpleNotification("ClipSync", $"Received: {TruncateText(clipboardData.Clip, 50)}");
+                                NotificationHelper.ShowSimpleNotification("ClipSync", $"Received: {TruncateText(clipboardData.Clip, 50)}");
                             });
                         }
                     }
@@ -202,7 +196,7 @@ namespace ClipSyncWindows
                         {
                             StatusTextBlock.Text = $"Listener error: {ex.Message}";
                         });
-                        
+
                         // Short delay before retrying
                         Thread.Sleep(1000);
                     }
@@ -241,25 +235,25 @@ namespace ClipSyncWindows
                         Clip = clipboardText,
                         Timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()
                     };
-                    
+
                     var jsonData = JsonConvert.SerializeObject(clipData);
-                    
+
                     // Send data
-                    await Task.Run(() =>
+                    await Task.Run(async () =>
                     {
                         using var client = new BluetoothClient();
                         client.Connect(device.DeviceAddress, ServiceUuid);
-                        
+
                         using var stream = client.GetStream();
-                        using var writer = new StreamWriter(stream);
-                        
-                        writer.Write(jsonData);
-                        writer.Flush();
-                        
-                        // Keep connection open briefly
-                        Thread.Sleep(1000);
+                        using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
+
+                        writer.Write(jsonData + "\n");
+
+                        Thread.Sleep(500);
+
+                        client.Close();
                     });
-                    
+
                     successCount++;
                 }
                 catch (Exception ex)
@@ -278,15 +272,15 @@ namespace ClipSyncWindows
             }
         }
 
-        private string TruncateText(string text, int maxLength)
+        private static string TruncateText(string text, int maxLength)
         {
             if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
                 return text;
-                
-            return text.Substring(0, maxLength) + "...";
+
+            return string.Concat(text.AsSpan(0, maxLength), "...");
         }
 
-        private void ShowSimpleNotification(string title, string message)
+        private static void ShowSimpleNotification(string title, string message)
         {
             try
             {
@@ -336,7 +330,7 @@ namespace ClipSyncWindows
     {
         [JsonProperty("clip")]
         public string Clip { get; set; } = string.Empty; // Initialize with empty string
-        
+
         [JsonProperty("timestamp")]
         public string Timestamp { get; set; } = string.Empty; // Initialize with empty string
     }
