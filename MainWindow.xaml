@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="ClipSync"
     Width="550"
+    Icon="app.ico"
     Height="650"
     Background="#F5F7FA"
     mc:Ignorable="d">
