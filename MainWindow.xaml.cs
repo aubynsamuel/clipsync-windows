@@ -10,9 +10,9 @@ namespace ClipSyncWindows
 {
     public partial class MainWindow : Window
     {
-        private readonly ObservableCollection<BluetoothDeviceInfo> _devices = new();
-        private BluetoothListener? _listener; // Make nullable
-        private CancellationTokenSource? _cancellationTokenSource; // Make nullable
+        private readonly ObservableCollection<BluetoothDeviceInfo> _devices = [];
+        private BluetoothListener? _listener;
+        private CancellationTokenSource? _cancellationTokenSource;
         private bool _isServiceRunning = false;
         private static readonly Guid ServiceUuid = new("8ce255c0-200a-11e0-ac64-0800200c9a66");
 
@@ -157,7 +157,7 @@ namespace ClipSyncWindows
                     using var reader = new StreamReader(stream);
 
                     // Read the JSON message
-                    var jsonText = reader.ReadToEnd();
+                    var jsonText = reader.ReadLine() ?? "";
 
                     try
                     {
@@ -171,7 +171,7 @@ namespace ClipSyncWindows
                                 StatusTextBlock.Text = "Received clipboard text & copied!";
 
                                 // Instead of using WinForms notification, use a simpler approach
-                                NotificationHelper.ShowSimpleNotification("ClipSync", $"Received: {TruncateText(clipboardData.Clip, 50)}");
+                                NotificationHelper.ShowSimpleNotification("ClipSync", $"ClipText Received: \n {TruncateText(clipboardData.Clip, 50)}");
                             });
                         }
                     }
@@ -239,7 +239,7 @@ namespace ClipSyncWindows
                     var jsonData = JsonConvert.SerializeObject(clipData);
 
                     // Send data
-                    await Task.Run(async () =>
+                    await Task.Run(() =>
                     {
                         using var client = new BluetoothClient();
                         client.Connect(device.DeviceAddress, ServiceUuid);
@@ -279,59 +279,14 @@ namespace ClipSyncWindows
 
             return string.Concat(text.AsSpan(0, maxLength), "...");
         }
-
-        private static void ShowSimpleNotification(string title, string message)
-        {
-            try
-            {
-                // Create a simple popup window instead of using NotifyIcon
-                var notification = new Window
-                {
-                    Title = title,
-                    Width = 300,
-                    Height = 100,
-                    WindowStyle = WindowStyle.None,
-                    ResizeMode = ResizeMode.NoResize,
-                    Topmost = true,
-                    WindowStartupLocation = WindowStartupLocation.CenterScreen
-                };
-
-                var textBlock = new TextBlock
-                {
-                    Text = message,
-                    TextWrapping = TextWrapping.Wrap,
-                    Margin = new Thickness(10),
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-
-                notification.Content = textBlock;
-                notification.Show();
-
-                // Auto-close after 3 seconds
-                var timer = new System.Windows.Threading.DispatcherTimer
-                {
-                    Interval = TimeSpan.FromSeconds(3)
-                };
-                timer.Tick += (s, e) =>
-                {
-                    timer.Stop();
-                    notification.Close();
-                };
-                timer.Start();
-            }
-            catch
-            {
-                // Notifications are optional, so ignore errors
-            }
-        }
     }
 
     public class ClipboardData
     {
         [JsonProperty("clip")]
-        public string Clip { get; set; } = string.Empty; // Initialize with empty string
+        public string Clip { get; set; } = string.Empty;
 
         [JsonProperty("timestamp")]
-        public string Timestamp { get; set; } = string.Empty; // Initialize with empty string
+        public string Timestamp { get; set; } = string.Empty;
     }
 }

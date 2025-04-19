@@ -72,7 +72,7 @@ namespace ClipSyncWindows
 
                 // 4) Fade+slide in
                 var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
-                toast.BeginAnimation(Window.OpacityProperty, fadeIn);
+                toast.BeginAnimation(UIElement.OpacityProperty, fadeIn);
 
                 var slideIn = new DoubleAnimation(wa.Bottom + toast.Height, toast.Top,
                                     TimeSpan.FromMilliseconds(300))
@@ -91,7 +91,7 @@ namespace ClipSyncWindows
 
                     var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(300));
                     fadeOut.Completed += (_, __) => toast.Close();
-                    toast.BeginAnimation(Window.OpacityProperty, fadeOut);
+                    toast.BeginAnimation(UIElement.OpacityProperty, fadeOut);
                 };
                 timer.Start();
             }

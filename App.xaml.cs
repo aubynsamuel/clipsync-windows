@@ -9,4 +9,4 @@ namespace ClipSyncWindows
             base.OnStartup(e);
         }
     }
-}   
+}
