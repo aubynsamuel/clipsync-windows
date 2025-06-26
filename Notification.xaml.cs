@@ -14,7 +14,9 @@ namespace ClipSyncWindows
         {
             try
             {
-                // 1) Create window shell
+                var theme = ThemeManager.Instance;
+
+                // Create window shell
                 var toast = new Window
                 {
                     Width = 300,
@@ -28,18 +30,18 @@ namespace ClipSyncWindows
                     Opacity = 0 // start invisible for fade-in
                 };
 
-                // 2) Build content with rounded-corner card + shadow
+                // Build content with rounded-corner card + shadow - theme aware
                 var border = new Border
                 {
                     CornerRadius = new CornerRadius(8),
-                    Background = Brushes.White,
+                    Background = theme.CardBackground,
                     Padding = new Thickness(12),
                     Effect = new DropShadowEffect
                     {
-                        Color = Colors.Black,
+                        Color = theme.IsDarkTheme ? Colors.Black : Colors.Gray,
                         BlurRadius = 10,
                         ShadowDepth = 0,
-                        Opacity = 0.2
+                        Opacity = theme.IsDarkTheme ? 0.4 : 0.2
                     }
                 };
 
@@ -50,7 +52,7 @@ namespace ClipSyncWindows
                     Text = title,
                     FontWeight = FontWeights.SemiBold,
                     FontSize = 14,
-                    Foreground = new SolidColorBrush(Color.FromRgb(44, 62, 80)),
+                    Foreground = theme.PrimaryText,
                     Margin = new Thickness(0, 0, 0, 4)
                 });
 
@@ -59,18 +61,18 @@ namespace ClipSyncWindows
                     Text = message,
                     TextWrapping = TextWrapping.Wrap,
                     FontSize = 12,
-                    Foreground = new SolidColorBrush(Color.FromRgb(102, 102, 102))
+                    Foreground = theme.SecondaryText
                 });
 
                 border.Child = stack;
                 toast.Content = border;
 
-                // 3) Position at bottom-right of the primary screen’s work area
+                // Position at bottom-right of the primary screen's work area
                 var wa = SystemParameters.WorkArea;
                 toast.Left = wa.Right - toast.Width - 16;
                 toast.Top = wa.Bottom - toast.Height - 16;
 
-                // 4) Fade+slide in
+                // Fade+slide in
                 var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(300));
                 toast.BeginAnimation(UIElement.OpacityProperty, fadeIn);
 
@@ -83,7 +85,7 @@ namespace ClipSyncWindows
 
                 toast.Show();
 
-                // 5) Auto‑close after delay with fade‑out
+                // Auto‑close after delay with fade‑out
                 var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3) };
                 timer.Tick += (s, e) =>
                 {
