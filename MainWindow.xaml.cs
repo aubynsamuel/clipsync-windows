@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace ClipSyncWindows
 {
@@ -88,7 +87,7 @@ namespace ClipSyncWindows
                 _listener.Start();
                 _isServiceRunning = true;
 
-                StatusTextBlock.Text = "Service: Listening for Android devices...";
+                StatusTextBlock.Text = "Service: Listening for bluetooth devices...";
 
                 // Run listening loop on a separate task
                 await Task.Run(() => ListeningLoop(token), token);
