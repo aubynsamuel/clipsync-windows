@@ -24,6 +24,7 @@ namespace ClipSyncWindows
             StartServiceButton.Click += StartServiceButton_Click;
             StopServiceButton.Click += StopServiceButton_Click;
             ShareButton.Click += ShareButton_Click;
+            ThemeToggleButton.Click += ThemeToggleButton_Click;
 
             LoadPairedDevices();
 
@@ -32,6 +33,11 @@ namespace ClipSyncWindows
             {
                 ShareButton.IsEnabled = DevicesListView.SelectedItems.Count > 0;
             };
+        }
+
+        private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            ThemeManager.Instance.ToggleTheme();
         }
 
         private void RefreshDevicesButton_Click(object sender, RoutedEventArgs e)

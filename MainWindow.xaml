@@ -4,17 +4,17 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ClipSyncWindows"
     Title="ClipSync"
     Width="550"
     Icon="app.ico"
     Height="650"
-    Background="#F5F7FA"
+    Background="{Binding Source={x:Static local:ThemeManager.Instance}, Path=WindowBackground}"
     mc:Ignorable="d">
 
     <Window.Resources>
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Background" Value="#6366F1" />
-            <!--  Default background  -->
             <Setter Property="Foreground" Value="White" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="BorderThickness" Value="0" />
@@ -30,7 +30,6 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <!--  Hover background - applies to all based styles  -->
                                 <Setter Property="Background" Value="#4F46E5" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
@@ -42,7 +41,6 @@
             </Setter>
         </Style>
 
-        <!--  Style for the Refresh Button  -->
         <Style
             x:Key="RefreshButtonStyle"
             BasedOn="{StaticResource ModernButton}"
@@ -56,7 +54,6 @@
             </Style.Triggers>
         </Style>
 
-        <!--  Style for the Stop Button  -->
         <Style
             x:Key="StopButtonStyle"
             BasedOn="{StaticResource ModernButton}"
@@ -70,7 +67,34 @@
             </Style.Triggers>
         </Style>
 
-        <!--  Custom ScrollViewer Style for Smooth Scrolling  -->
+        <!-- Theme Toggle Button Style -->
+        <Style x:Key="ThemeToggleButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=BorderBrush}" />
+            <Setter Property="Foreground" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=SecondaryText}" />
+            <Setter Property="Width" Value="40" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="20">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="SmoothScrollViewer" TargetType="ScrollViewer">
             <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
@@ -99,7 +123,6 @@
             </Setter>
         </Style>
 
-        <!--  Custom ListBox ScrollViewer  -->
         <Style x:Key="SmoothScrollListView" TargetType="ListView">
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
@@ -111,7 +134,7 @@
 
     <Border
         Margin="10"
-        Background="White"
+        Background="{Binding Source={x:Static local:ThemeManager.Instance}, Path=CardBackground}"
         CornerRadius="12">
         <Border.Effect>
             <DropShadowEffect
@@ -129,34 +152,48 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--  Header with Gradient  -->
+            <!-- Header with Theme Toggle -->
             <Border
                 Grid.Row="0"
                 Padding="0,0,0,15"
-                Background="#FFFFFF">
-                <StackPanel>
-                    <TextBlock
-                        Margin="0,0,0,8"
-                        HorizontalAlignment="Center"
-                        FontSize="28"
-                        FontWeight="Bold"
-                        Text="ClipSync">
-                        <TextBlock.Foreground>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                <GradientStop Offset="0.0" Color="#6366F1" />
-                                <GradientStop Offset="1.0" Color="#8B5CF6" />
-                            </LinearGradientBrush>
-                        </TextBlock.Foreground>
-                    </TextBlock>
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontSize="12"
-                        Foreground="#6B7280"
-                        Text="Seamless clipboard sharing across devices" />
-                </StackPanel>
+                Background="Transparent">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            HorizontalAlignment="Center"
+                            FontSize="28"
+                            FontWeight="Bold"
+                            Text="ClipSync"
+                            Foreground="{Binding Source={x:Static local:ThemeManager.Instance}, Path=TitleGradient}" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="12"
+                            Foreground="{Binding Source={x:Static local:ThemeManager.Instance}, Path=SecondaryText}"
+                            Text="Seamless clipboard sharing across devices" />
+                    </StackPanel>
+                    
+                    <!-- Theme Toggle Button -->
+                    <Button
+                        x:Name="ThemeToggleButton"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Style="{StaticResource ThemeToggleButton}"
+                        ToolTip="Toggle Dark/Light Theme">
+                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="16">
+                            <TextBlock.Text>
+                                <Binding Source="{x:Static local:ThemeManager.Instance}" Path="IsDarkTheme">
+                                    <Binding.Converter>
+                                        <local:BoolToThemeIconConverter />
+                                    </Binding.Converter>
+                                </Binding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </Button>
+                </Grid>
             </Border>
 
-            <!--  Main Content Area  -->
+            <!-- Main Content Area -->
             <Grid Grid.Row="1" Margin="0,10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -167,13 +204,13 @@
                     Grid.Row="0"
                     Margin="0,0,0,10"
                     FontWeight="Medium"
-                    Foreground="#4B5563"
+                    Foreground="{Binding Source={x:Static local:ThemeManager.Instance}, Path=PrimaryText}"
                     Text="Select devices to share clipboard with:" />
 
                 <Border
                     Grid.Row="1"
-                    Background="#F9FAFB"
-                    BorderBrush="#E5E7EB"
+                    Background="{Binding Source={x:Static local:ThemeManager.Instance}, Path=ListBackground}"
+                    BorderBrush="{Binding Source={x:Static local:ThemeManager.Instance}, Path=BorderBrush}"
                     BorderThickness="1"
                     CornerRadius="8">
                     <ListView
@@ -189,17 +226,17 @@
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 <Setter Property="Padding" Value="5" />
                                 <Setter Property="Margin" Value="0,4" />
-                                <Setter Property="Background" Value="White" />
+                                <Setter Property="Background" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=ListItemBackground}" />
                                 <Setter Property="BorderThickness" Value="1" />
-                                <Setter Property="BorderBrush" Value="#E5E7EB" />
+                                <Setter Property="BorderBrush" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=BorderBrush}" />
                                 <Style.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="#EEF2FF" />
-                                        <Setter Property="BorderBrush" Value="#6366F1" />
+                                        <Setter Property="Background" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=ListItemSelectedBackground}" />
+                                        <Setter Property="BorderBrush" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=ListItemSelectedBorder}" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F9FAFB" />
-                                        <Setter Property="BorderBrush" Value="#D1D5DB" />
+                                        <Setter Property="Background" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
+                                        <Setter Property="BorderBrush" Value="{Binding Source={x:Static local:ThemeManager.Instance}, Path=ListItemHoverBorder}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
@@ -227,14 +264,14 @@
                                         Width="40"
                                         Height="40"
                                         Margin="0,0,12,0"
-                                        Background="#EEF2FF"
+                                        Background="{Binding Source={x:Static local:ThemeManager.Instance}, Path=IconBackground}"
                                         CornerRadius="20">
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             FontSize="16"
                                             FontWeight="Bold"
-                                            Foreground="#6366F1"
+                                            Foreground="{Binding Source={x:Static local:ThemeManager.Instance}, Path=IconForeground}"
                                             Text="{Binding DeviceName, StringFormat={}{0:0}}" />
                                     </Border>
 
@@ -242,12 +279,12 @@
                                         <TextBlock
                                             FontSize="14"
                                             FontWeight="SemiBold"
-                                            Foreground="#111827"
+                                            Foreground="{Binding Source={x:Static local:ThemeManager.Instance}, Path=PrimaryText}"
                                             Text="{Binding DeviceName}" />
                                         <TextBlock
                                             Margin="0,3,0,0"
                                             FontSize="12"
-                                            Foreground="#6B7280"
+                                            Foreground="{Binding Source={x:Static local:ThemeManager.Instance}, Path=SecondaryText}"
                                             Text="{Binding DeviceAddress}" />
                                     </StackPanel>
                                 </Grid>
@@ -257,7 +294,7 @@
                 </Border>
             </Grid>
 
-            <!--  Button Controls  -->
+            <!-- Button Controls -->
             <StackPanel
                 Grid.Row="2"
                 Margin="0,15,0,20"
@@ -281,11 +318,11 @@
                     Style="{StaticResource StopButtonStyle}" />
             </StackPanel>
 
-            <!--  Status Bar  -->
+            <!-- Status Bar -->
             <Border
                 Grid.Row="3"
                 Padding="15,12"
-                Background="#F3F4F6"
+                Background="{Binding Source={x:Static local:ThemeManager.Instance}, Path=StatusBarBackground}"
                 CornerRadius="6">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -304,7 +341,7 @@
                             Name="StatusTextBlock"
                             VerticalAlignment="Center"
                             FontWeight="Medium"
-                            Foreground="#4B5563"
+                            Foreground="{Binding Source={x:Static local:ThemeManager.Instance}, Path=PrimaryText}"
                             Text="Ready" />
                     </StackPanel>
 
