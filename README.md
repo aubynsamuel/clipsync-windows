@@ -1,4 +1,10 @@
+<div align="center">
+
+<img src="AppIcon.png" alt="ClipSync Windows" width="100">
+
 # ClipSync Windows
+
+</div>
 
 A modern Windows application that enables seamless clipboard sharing between Windows computers and Android devices via Bluetooth.
 
