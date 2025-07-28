@@ -35,11 +35,11 @@
     <PackageId>ClipSync.Windows</PackageId>
     <Authors>ClipSync Team</Authors>
     <PackageDescription>$(AssemblyDescription)</PackageDescription>
-    <PackageProjectUrl>https://github.com/aubynsamuel/ClipSyncWindows</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/aubynsamuel/clipsync-windows</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageTags>clipboard;bluetooth;sharing;cross-platform;android;windows</PackageTags>
-    <RepositoryUrl>https://github.com/aubynsamuel/ClipSyncWindows.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/aubynsamuel/clipsync-windows.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 

@@ -31,7 +31,7 @@ A modern Windows application that enables seamless clipboard sharing between Win
 
 ### Option 1: Download Release (Recommended)
 
-1. Go to the [Releases](https://github.com/yourusername/ClipSyncWindows/releases) page
+1. Go to the [Releases](https://github.com/aubynsamuel/clipsync-windows/releases) page
 2. Download the latest `ClipSync-Windows-Setup.exe`
 3. Run the installer and follow the setup wizard
 4. Launch ClipSync from the Start Menu
@@ -46,7 +46,7 @@ A modern Windows application that enables seamless clipboard sharing between Win
 2. **Clone and Build**:
 
    ```bash
-   git clone https://github.com/yourusername/ClipSyncWindows.git
+   git clone https://github.com/aubynsamuel/clipsync-windows.git
    cd ClipSyncWindows
    dotnet restore
    dotnet build --configuration Release
@@ -133,7 +133,7 @@ ClipSync stores its settings in:
 
 ### Getting Help
 
-- Check the [Issues](https://github.com/yourusername/ClipSyncWindows/issues) page
+- Check the [Issues](https://github.com/aubynsamuel/clipsync-windows/issues) page
 - Create a new issue with detailed error information
 - Include Windows version and Bluetooth adapter details
 
@@ -192,8 +192,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Email**: <support@clipsync.app>
-- **GitHub Issues**: [Report a bug](https://github.com/yourusername/ClipSyncWindows/issues/new)
-- **Documentation**: [Wiki](https://github.com/yourusername/ClipSyncWindows/wiki)
+- **GitHub Issues**: [Report a bug](https://github.com/aubynsamuel/clipsync-windows/issues/new)
+- **Documentation**: [Wiki](https://github.com/aubynsamuel/clipsync-windows/wiki)
 
 ---
 

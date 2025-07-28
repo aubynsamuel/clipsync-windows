@@ -18,7 +18,7 @@ Thank you for your interest in contributing to ClipSync Windows! This document p
 
    ```bash
 
-   git clone https://github.com/yourusername/ClipSyncWindows.git
+   git clone https://github.com/aubynsamuel/clipsync-windows.git
    cd ClipSyncWindows
    ```
 
@@ -275,7 +275,7 @@ Contributors will be recognized in:
 ## 📞 Getting Help
 
 - **Discord**: [ClipSync Community](https://discord.gg/clipsync)
-- **GitHub Discussions**: [Ask questions](https://github.com/yourusername/ClipSyncWindows/discussions)
+- **GitHub Discussions**: [Ask questions](https://github.com/aubynsamuel/clipsync-windows/discussions)
 - **Email**: <dev@clipsync.app>
 
 ## 📄 License

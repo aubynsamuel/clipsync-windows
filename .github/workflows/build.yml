@@ -23,13 +23,13 @@ jobs:
       run: dotnet restore
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build ClipSyncWindows.csproj --configuration Release --no-restore
     
     - name: Test
-      run: dotnet test --no-build --verbosity normal --configuration Release
+      run: dotnet test ClipSyncWindows.csproj --no-build --verbosity normal --configuration Release
     
     - name: Publish
-      run: dotnet publish --configuration Release --output ./publish --no-build
+      run: dotnet publish ClipSyncWindows.csproj --configuration Release --output ./publish --self-contained true --runtime win-x64
     
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
@@ -37,6 +37,49 @@ jobs:
         name: ClipSync-Windows-${{ github.sha }}
         path: ./publish/
     
+  test-release:
+    needs: build
+    runs-on: windows-latest
+    if: github.ref == 'refs/heads/test'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Publish Self-Contained
+      run: dotnet publish ClipSyncWindows.csproj --configuration Release --output ./release --self-contained true --runtime win-x64
+    
+    - name: Setup Inno Setup
+      run: |
+        Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "innosetup.exe"
+        Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+    
+    - name: Update Inno Setup Script for Test
+      run: |
+        $content = Get-Content "InnoInstaller.iss" -Raw
+        $content = $content -replace 'Source: "publish\\\*"', 'Source: "release\*"'
+        $content = $content -replace 'SetupIconFile=publish\\app\.ico', 'SetupIconFile=release\app.ico'
+        Set-Content "InnoInstaller.iss" $content
+    
+    - name: Build Installer
+      run: |
+        & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "InnoInstaller.iss"
+    
+    - name: Upload Test Release Assets
+      uses: actions/upload-artifact@v4
+      with:
+        name: ClipSync-Test-Release-${{ github.sha }}
+        path: |
+          ClipSync_Setup.exe
+          ./release/
+
   release:
     needs: build
     runs-on: windows-latest
@@ -53,8 +96,26 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     
-    - name: Publish Release
-      run: dotnet publish --configuration Release --output ./release --self-contained true --runtime win-x64
+    - name: Publish Self-Contained Release
+      run: dotnet publish ClipSyncWindows.csproj --configuration Release --output ./release --self-contained true --runtime win-x64
+    
+    - name: Setup Inno Setup
+      run: |
+        Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "innosetup.exe"
+        Start-Process -FilePath "innosetup.exe" -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART" -Wait
+    
+    - name: Update Inno Setup Script for Release
+      run: |
+        $content = Get-Content "InnoInstaller.iss" -Raw
+        $content = $content -replace 'Source: "publish\\\*"', 'Source: "release\*"'
+        $content = $content -replace 'SetupIconFile=publish\\app\.ico', 'SetupIconFile=release\app.ico'
+        $content = $content -replace '#define MyAppVersion "1.0.0"', '#define MyAppVersion "${{ github.ref_name }}"'
+        $content = $content -replace 'OutputBaseFilename=ClipSync_Setup', 'OutputBaseFilename=ClipSync-Windows-${{ github.ref_name }}-Setup'
+        Set-Content "InnoInstaller.iss" $content
+    
+    - name: Build Installer
+      run: |
+        & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "InnoInstaller.iss"
     
     - name: Create Release Archive
       run: |
@@ -87,7 +148,7 @@ jobs:
         draft: false
         prerelease: false
     
-    - name: Upload Release Asset
+    - name: Upload Release Asset - Zip
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,3 +157,13 @@ jobs:
         asset_path: ./ClipSync-Windows-${{ github.ref_name }}.zip
         asset_name: ClipSync-Windows-${{ github.ref_name }}.zip
         asset_content_type: application/zip
+    
+    - name: Upload Release Asset - Installer
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ClipSync-Windows-${{ github.ref_name }}-Setup.exe
+        asset_name: ClipSync-Windows-${{ github.ref_name }}-Setup.exe
+        asset_content_type: application/octet-stream
