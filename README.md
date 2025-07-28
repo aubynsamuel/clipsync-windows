@@ -5,7 +5,7 @@ A modern Windows application that enables seamless clipboard sharing between Win
 ## 🚀 Features
 
 - **Cross-Platform Clipboard Sharing**: Share clipboard content between Windows and Android devices
-- **Bluetooth Connectivity**: Uses Bluetooth for secure, local network sharing
+- **Bluetooth Connectivity**: Uses Bluetooth for secure, local sharing
 - **Modern UI**: Clean, responsive interface with dark/light theme support
 - **Real-time Sync**: Instant clipboard synchronization when devices are connected
 - **Multi-Device Support**: Connect and share with multiple devices simultaneously
@@ -18,14 +18,12 @@ A modern Windows application that enables seamless clipboard sharing between Win
 - **OS**: Windows 10 version 1903 or later / Windows 11
 - **Framework**: .NET 9.0 Runtime
 - **Bluetooth**: Bluetooth 4.0+ adapter
-- **RAM**: 512 MB minimum
-- **Storage**: 50 MB available space
 
 ### Android Companion App
 
 - Android 5.0 (API level 21) or higher
 - Bluetooth enabled
-- ClipSync Android app (available separately)
+- ClipSync Android app ()
 
 ## 📦 Installation
 
@@ -39,7 +37,6 @@ A modern Windows application that enables seamless clipboard sharing between Win
 ### Option 2: Build from Source
 
 1. **Prerequisites**:
-   - Visual Studio 2022 or later
    - .NET 9.0 SDK
    - Git
 
@@ -97,39 +94,23 @@ A modern Windows application that enables seamless clipboard sharing between Win
 - **No Internet Required**: No data is sent to external servers
 - **Encrypted Connection**: Uses Bluetooth's built-in encryption
 - **Paired Devices Only**: Only works with previously paired devices
-- **No Data Storage**: Clipboard content is not permanently stored
-
-## 🛠️ Configuration
-
-ClipSync stores its settings in:
-
-```
-%APPDATA%\ClipSync\
-├── theme_settings.json    # Theme preferences
-└── app_config.json       # Application settings (future)
-```
+- **No Data Storage**: Clipboard content is not stored
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
-**"No devices found"**
+-**"No devices found"**
 
 - Ensure Bluetooth is enabled on both devices
 - Verify devices are paired in Windows Settings
 - Try refreshing the device list
 
-**"Connection failed"**
+-**Connection failed**
 
 - Check if Android app is running and listening
 - Restart Bluetooth on both devices
 - Re-pair devices if necessary
-
-**"Service won't start"**
-
-- Run ClipSync as Administrator
-- Check Windows Firewall settings
-- Ensure no other Bluetooth apps are conflicting
 
 ### Getting Help
 
@@ -137,47 +118,14 @@ ClipSync stores its settings in:
 - Create a new issue with detailed error information
 - Include Windows version and Bluetooth adapter details
 
-## 🔄 Compatibility
-
-### Tested Bluetooth Adapters
-
-- Intel Wireless Bluetooth
-- Realtek Bluetooth adapters
-- Qualcomm Bluetooth adapters
-- Most USB Bluetooth dongles (4.0+)
-
-### Known Limitations
-
-- Text-only clipboard sharing (images/files not supported yet)
-- Maximum text size: 1MB per transfer
-- Requires devices to be within Bluetooth range (~10 meters)
-
-## 🚧 Roadmap
-
-- [ ] File and image sharing support
-- [ ] WiFi Direct connectivity option
-- [ ] Clipboard history
-- [ ] Auto-start with Windows
-- [ ] Notification system improvements
-- [ ] Multi-language support
-
 ## 🤝 Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-### Development Setup
+We welcome contributions
 
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature-name`
 3. Make your changes and test thoroughly
 4. Submit a pull request with a clear description
-
-### Code Style
-
-- Follow C# coding conventions
-- Use meaningful variable and method names
-- Add XML documentation for public APIs
-- Include unit tests for new features
 
 ## 📄 License
 
@@ -187,14 +135,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [InTheHand.Net.Bluetooth](https://github.com/inthehand/32feet) for Bluetooth connectivity
 - [Newtonsoft.Json](https://www.newtonsoft.com/json) for JSON serialization
-- Icons from [Lucide](https://lucide.dev/)
 
-## 📞 Support
-
-- **Email**: <support@clipsync.app>
-- **GitHub Issues**: [Report a bug](https://github.com/aubynsamuel/clipsync-windows/issues/new)
-- **Documentation**: [Wiki](https://github.com/aubynsamuel/clipsync-windows/wiki)
-
----
-
-**Made with ❤️ for seamless cross-platform productivity**
+Made with ❤️ for seamless cross-platform productivity

@@ -30,17 +30,6 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Deterministic>true</Deterministic>
     <PathMap>$(MSBuildProjectDirectory)=C:\</PathMap>
-    
-    <!-- Package Information for NuGet (if needed) -->
-    <PackageId>ClipSync.Windows</PackageId>
-    <Authors>ClipSync Team</Authors>
-    <PackageDescription>$(AssemblyDescription)</PackageDescription>
-    <PackageProjectUrl>https://github.com/aubynsamuel/clipsync-windows</PackageProjectUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageTags>clipboard;bluetooth;sharing;cross-platform;android;windows</PackageTags>
-    <RepositoryUrl>https://github.com/aubynsamuel/clipsync-windows.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
