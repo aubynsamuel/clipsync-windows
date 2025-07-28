@@ -21,9 +21,9 @@ A modern Windows application that enables seamless clipboard sharing between Win
 
 ### Android Companion App
 
-- Android 5.0 (API level 21) or higher
+- Android 6.0+ (API level 23)
 - Bluetooth enabled
-- ClipSync Android app ()
+- ClipSync Android app - [Download from GitHub](https://github.com/aubynsamuel/clipsync-android)
 
 ## 📦 Installation
 
