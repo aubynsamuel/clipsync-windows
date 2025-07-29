@@ -4,14 +4,21 @@
 
 # ClipSync
 
-A Windows app that enables seamless clipboard sharing between Windows computers and Android devices over Bluetooth. No more emailing yourself text. Copy on one device, paste on the other. Instantly. 100% offline
+A Windows app that enables **seamless clipboard sharing** between Windows computers and Android devices over *Bluetooth*. **No more emailing yourself text.** Copy on one device, paste on the other. *Instant. 100% offline*
+
+[![Windows](https://img.shields.io/badge/Platform-Windows-green.svg)](https://github.com/aubynsamuel/clipsync-windows)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 </div>
 
 ## Demo/Screenshots
 
-<img src="./demo/ClipSync_Setup_Windows_lightmode.png" width="800">
-<img src="./demo/ClipSync_Setup_Windows_darkmode.png" width="800">
-<img src="./demo/ClipSync.gif" width="1000">
+<div align="center">
+
+   <img src="./demo/ClipSync_Setup_Windows_lightmode.png" width="800">
+   <img src="./demo/ClipSync_Setup_Windows_darkmode.png" width="800">
+   <img src="./demo/ClipSync.gif" width="1000">
+
+</div>
 
 ## 🚀 Features
 
@@ -86,9 +93,9 @@ A Windows app that enables seamless clipboard sharing between Windows computers 
 3. Select target device(s) from the devices list
 4. Click **"Share Clipboard"** to send content to selected devices
 
-#### Receiving from Android
+#### Receiving
 
-- When your Android device sends clipboard content, it will automatically appear in your Windows clipboard
+- When the other device sends clipboard content, it will automatically appear in your Windows clipboard
 - A notification will confirm successful receipt
 
 ## 🔒 Security & Privacy
@@ -138,5 +145,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [InTheHand.Net.Bluetooth](https://github.com/inthehand/32feet) for Bluetooth connectivity
 - [Newtonsoft.Json](https://www.newtonsoft.com/json) for JSON serialization
+
+---
 
 Made with ❤️ for seamless cross-platform productivity
