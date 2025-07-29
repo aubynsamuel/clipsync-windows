@@ -1,38 +1,38 @@
 <div align="center">
 
-<img src="AppIcon.png" alt="ClipSync Windows" width="100">
+<img src="demo/AppIcon.png" alt="ClipSync Windows" width="100">
 
-# ClipSync Windows
+# ClipSync
 
-A modern Windows application that enables seamless clipboard sharing between Windows computers and Android devices via Bluetooth.
+A Windows app that enables seamless clipboard sharing between Windows computers and Android devices over Bluetooth. No more emailing yourself text. Copy on one device, paste on the other. Instantly. 100% offline
 </div>
 
-### Demo/Screenshots
+## Demo/Screenshots
 
+<img src="./demo/ClipSync_Setup_Windows_lightmode.png" width="800">
+<img src="./demo/ClipSync_Setup_Windows_darkmode.png" width="800">
 <img src="./demo/ClipSync.gif" width="1000">
 
 ## 🚀 Features
 
-- **Cross-Platform Clipboard Sharing**: Share clipboard content between Windows and Android devices
-- **Bluetooth Connectivity**: Uses Bluetooth for secure, local sharing
-- **Modern UI**: Clean, responsive interface with dark/light theme support
-- **Real-time Sync**: Instant clipboard synchronization when devices are connected
+- **Cross-Platform Clipboard Sharing**: Share clipboard text between Windows and Android devices
+- **Real-time Sharing**: Instant clipboard sharing between devices
 - **Multi-Device Support**: Connect and share with multiple devices simultaneously
-- **Automatic Discovery**: Finds and lists paired Bluetooth devices automatically
+- **Modern UI**: Clean, responsive interface with dark/light theme support
+- **Bluetooth Connectivity**: Uses Bluetooth for secure, local sharing
+- **Paired Devices Discovery**: Finds and lists paired Bluetooth devices
 
 ## 📋 Requirements
 
 ### System Requirements
 
-- **OS**: Windows 10 version 1903 or later / Windows 11
+- **OS**: Windows 10 / Windows 11
 - **Framework**: .NET 9.0 Runtime
-- **Bluetooth**: Bluetooth 4.0+ adapter
+- **Bluetooth**: Bluetooth adapter
 
 ### Android Companion App
 
-- Android 6.0+ (API level 23)
-- Bluetooth enabled
-- ClipSync Android app - [Download from GitHub](https://github.com/aubynsamuel/clipsync-android)
+- ClipSync Android - [Download on GitHub](https://github.com/aubynsamuel/clipsync-android/releases)
 
 ## 📦 Installation
 
@@ -46,14 +46,13 @@ A modern Windows application that enables seamless clipboard sharing between Win
 ### Option 2: Build from Source
 
 1. **Prerequisites**:
-   - .NET 9.0 SDK
-   - Git
+   - .NET SDK 9.0+
 
 2. **Clone and Build**:
 
    ```bash
    git clone https://github.com/aubynsamuel/clipsync-windows.git
-   cd ClipSyncWindows
+   cd clipsync-windows
    dotnet restore
    dotnet build --configuration Release
    ```
@@ -69,8 +68,8 @@ A modern Windows application that enables seamless clipboard sharing between Win
 ### Initial Setup
 
 1. **Enable Bluetooth**: Ensure Bluetooth is enabled on your Windows computer
-2. **Pair Devices**: Pair your Android device with your Windows computer through Windows Settings
-3. **Install Android App**: Install the ClipSync Android companion app
+2. **Pair Devices**: Pair your Android device with your Windows computer through Windows/Android Settings
+3. **Install Android App**: [Install the ClipSync Android companion app](https://github.com/aubynsamuel/clipsync-android/releases)
 4. **Launch ClipSync**: Start the ClipSync Windows application
 
 ### Using ClipSync
@@ -79,43 +78,38 @@ A modern Windows application that enables seamless clipboard sharing between Win
 
 1. Click **"Start Service"** to begin listening for connections
 2. The status will show "Service: Listening for bluetooth devices..."
-3. Your Android device can now connect and share clipboard content
 
 #### Sharing from Windows to Android
 
-1. Copy any text to your Windows clipboard
-2. Select target device(s) from the device list
-3. Click **"Share Clipboard"** to send content to selected devices
+1. Open the Android app and press Start to listen on Android
+2. Copy any text to your Windows clipboard
+3. Select target device(s) from the devices list
+4. Click **"Share Clipboard"** to send content to selected devices
 
 #### Receiving from Android
 
 - When your Android device sends clipboard content, it will automatically appear in your Windows clipboard
 - A notification will confirm successful receipt
 
-#### Theme Switching
-
-- Click the theme toggle button (🌙/☀️) to switch between dark and light modes
-- Theme preference is automatically saved
-
 ## 🔒 Security & Privacy
 
-- **Local Network Only**: All communication happens over Bluetooth (local range)
-- **No Internet Required**: No data is sent to external servers
-- **Encrypted Connection**: Uses Bluetooth's built-in encryption
-- **Paired Devices Only**: Only works with previously paired devices
-- **No Data Storage**: Clipboard content is not stored
+- **Fully Local**: All data stays on your device
+- **No Cloud or Internet**: Fully offline
+- **Encrypted Transmission**: Uses Bluetooth's built-in encryption
+- **Paired Devices Only**: Prevents unauthorized access
+- **No Data Storage**: Clipboard data is never stored
 
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
--**"No devices found"**
+#### No devices found
 
 - Ensure Bluetooth is enabled on both devices
 - Verify devices are paired in Windows Settings
-- Try refreshing the device list
+- Try refreshing the devices list
 
--**Connection failed**
+#### Connection failed
 
 - Check if Android app is running and listening
 - Restart Bluetooth on both devices
@@ -125,7 +119,7 @@ A modern Windows application that enables seamless clipboard sharing between Win
 
 - Check the [Issues](https://github.com/aubynsamuel/clipsync-windows/issues) page
 - Create a new issue with detailed error information
-- Include Windows version and Bluetooth adapter details
+- Include Windows version and Bluetooth adapter details if possible
 
 ## 🤝 Contributing
 
