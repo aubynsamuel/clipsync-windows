@@ -4,9 +4,12 @@
 
 # ClipSync Windows
 
+A modern Windows application that enables seamless clipboard sharing between Windows computers and Android devices via Bluetooth.
 </div>
 
-A modern Windows application that enables seamless clipboard sharing between Windows computers and Android devices via Bluetooth.
+### Demo/Screenshots
+
+<img src="./demo/ClipSync.gif" width="1000">
 
 ## 🚀 Features
 
