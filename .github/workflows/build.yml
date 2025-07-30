@@ -2,10 +2,8 @@ name: Build and Release
 
 on:
   push:
-    branches: [ main, develop, test ]
+    branches: [ test ]
     tags: [ 'v*' ]
-  pull_request:
-    branches: [ main ]
 
 env:
   DOTNET_VERSION: '9.0.x'
