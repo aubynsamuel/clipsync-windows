@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Brushes = System.Windows.Media.Brushes;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using System.Windows.Media.Effects;

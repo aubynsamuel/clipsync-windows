@@ -1,9 +1,10 @@
-﻿using InTheHand.Net.Sockets;
+using InTheHand.Net.Sockets;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Windows;
+using System.ComponentModel;
 
 namespace ClipSyncWindows
 {
@@ -14,6 +15,7 @@ namespace ClipSyncWindows
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _isServiceRunning = false;
         private static readonly Guid ServiceUuid = new("8ce255c0-200a-11e0-ac64-0800200c9a66");
+        private SystemTrayManager? _systemTrayManager;
 
         public MainWindow()
         {
@@ -32,7 +34,31 @@ namespace ClipSyncWindows
             DevicesListView.SelectionChanged += (s, e) =>
             {
                 ShareButton.IsEnabled = DevicesListView.SelectedItems.Count > 0;
+                _systemTrayManager?.UpdateDevicesList();
             };
+
+            // Initialize system tray manager
+            _systemTrayManager = new SystemTrayManager(this, _devices);
+
+            // Handle window state changes for smart tray behavior
+            StateChanged += MainWindow_StateChanged;
+            Closing += MainWindow_Closing;
+        }
+
+        private void MainWindow_StateChanged(object? sender, EventArgs e)
+        {
+            // Only minimize to tray if user explicitly minimizes (not when closing)
+            if (WindowState == WindowState.Minimized)
+            {
+                _systemTrayManager?.HideToTray();
+            }
+        }
+
+        private void MainWindow_Closing(object? sender, CancelEventArgs e)
+        {
+            // Clean up system tray and stop services
+            _systemTrayManager?.Dispose();
+            StopListeningService();
         }
 
         private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
@@ -61,11 +87,14 @@ namespace ClipSyncWindows
                 }
 
                 StatusTextBlock.Text = $"Paired devices loaded: {_devices.Count}";
+                
+                // Update system tray device list
+                _systemTrayManager?.UpdateDevicesList();
             }
             catch (Exception ex)
             {
                 StatusTextBlock.Text = $"Error loading devices: {ex.Message}";
-                MessageBox.Show($"Failed to load Bluetooth devices: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show($"Failed to load Bluetooth devices: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -104,7 +133,7 @@ namespace ClipSyncWindows
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error starting Bluetooth service: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show($"Error starting Bluetooth service: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 StopListeningService();
             }
         }
@@ -139,7 +168,7 @@ namespace ClipSyncWindows
             }
         }
 
-        private void ListeningLoop(CancellationToken token)
+        private async Task ListeningLoop(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -148,7 +177,7 @@ namespace ClipSyncWindows
                     // Null check before accepting
                     if (_listener == null)
                     {
-                        Thread.Sleep(1000);
+                        await Task.Delay(1000, token);
                         continue;
                     }
 
@@ -172,7 +201,7 @@ namespace ClipSyncWindows
                         {
                             Dispatcher.Invoke(() =>
                             {
-                                Clipboard.SetText(clipboardData.Clip);
+                                System.Windows.Clipboard.SetText(clipboardData.Clip);
                                 StatusTextBlock.Text = "Received clipboard text & copied!";
 
                                 // Instead of using WinForms notification, use a simpler approach
@@ -182,42 +211,36 @@ namespace ClipSyncWindows
                     }
                     catch (JsonException)
                     {
-                        // If JSON parsing fails, try using the text directly
-                        if (!string.IsNullOrEmpty(jsonText))
-                        {
-                            Dispatcher.Invoke(() =>
-                            {
-                                Clipboard.SetText(jsonText);
-                                StatusTextBlock.Text = "Received raw text & copied!";
-                            });
-                        }
+                        // Ignore malformed JSON
                     }
                 }
                 catch (Exception ex)
                 {
-                    if (!token.IsCancellationRequested)
+                    if (token.IsCancellationRequested)
                     {
-                        Dispatcher.Invoke(() =>
-                        {
-                            StatusTextBlock.Text = $"Listener error: {ex.Message}";
-                        });
-
-                        // Short delay before retrying
-                        Thread.Sleep(1000);
+                        break; // Exit if service was stopped
                     }
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        StatusTextBlock.Text = $"Listener error: {ex.Message}";
+                    });
+
+                    // Short delay before retrying
+                    await Task.Delay(1000, token);
                 }
             }
         }
 
         private async void ShareButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!Clipboard.ContainsText())
+            if (!System.Windows.Clipboard.ContainsText())
             {
                 StatusTextBlock.Text = "Clipboard is empty!";
                 return;
             }
 
-            var clipboardText = Clipboard.GetText();
+            var clipboardText = System.Windows.Clipboard.GetText();
             if (string.IsNullOrEmpty(clipboardText))
             {
                 StatusTextBlock.Text = "Clipboard is empty!";
@@ -285,7 +308,7 @@ namespace ClipSyncWindows
             return string.Concat(text.AsSpan(0, maxLength), "...");
         }
     }
-
+            
     public class ClipboardData
     {
         [JsonProperty("clip")]

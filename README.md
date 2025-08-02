@@ -34,7 +34,7 @@ A Windows app that enables **seamless clipboard sharing** between Windows comput
 ### System Requirements
 
 - **OS**: Windows 10 / Windows 11
-- **Framework**: .NET 9.0 Runtime 
+- **Framework**: .NET 9.0 Runtime
 - **Bluetooth**: Bluetooth adapter
 
 ### Android Companion App
