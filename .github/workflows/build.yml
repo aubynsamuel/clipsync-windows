@@ -240,32 +240,12 @@ jobs:
       with:
         name: ClipSync Windows ${{ needs.prepare-installer.outputs.version }}
         body: |
-          ## ClipSync Windows ${{ needs.prepare-installer.outputs.version }}
-          
-          ### Installation Options
-          
-          **Option 1: Installer (Recommended)**
-          1. Download `ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}-Setup.exe`
-          2. Run the installer and follow the setup wizard
-          
-          **Option 2: Portable**
-          1. Download `ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}.zip`
-          2. Extract to your desired location
-          3. Run `ClipSyncWindows.exe`
-          
-          ### System Requirements
-          
-          - Windows 10 version 1903+ or Windows 11
-          - .NET 9.0 Runtime (included in self-contained build)
-          - Bluetooth adapter (for device synchronization)
-          
-          ### What's New
-          
-          Please see the [CHANGELOG](CHANGELOG.md) for detailed information about changes in this release.
+
+
         files: |
           ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}.zip
           ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}-Setup.exe
-        draft: false
+        draft: true
         prerelease: false
         generate_release_notes: true
       env:
