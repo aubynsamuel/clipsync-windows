@@ -132,6 +132,8 @@
             <Setter Property="ScrollViewer.PanningMode" Value="VerticalOnly" />
             <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
         </Style>
+
+        <converters:FirstLetterConverter x:Key="FirstLetterConverter" />
     </Window.Resources>
 
     <Border
@@ -274,7 +276,7 @@
                                             FontSize="16"
                                             FontWeight="Bold"
                                             Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=IconForeground}"
-                                            Text="{Binding DeviceName, StringFormat={}{0:0}}" />
+                                            Text="{Binding DeviceName, Converter={StaticResource FirstLetterConverter}}" />
                                     </Border>
 
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
