@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace ClipSyncWindows
+namespace ClipSyncWindows.Converters
 {
     public class BoolToThemeIconConverter : IValueConverter
     {

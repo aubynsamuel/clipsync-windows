@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationIcon>Assets/app.ico</ApplicationIcon>
     
     <!-- Version Information -->
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -33,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="app.ico">
+    <Content Include="Assets\app.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

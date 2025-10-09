@@ -1,14 +1,18 @@
-﻿using InTheHand.Net.Sockets;
+using InTheHand.Net.Sockets;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using System.Windows;
+using ClipSyncWindows.Models;
+using ClipSyncWindows.Services;
+using ClipSyncWindows.ViewModels;
 
 namespace ClipSyncWindows
 {
     public partial class MainWindow : Window
     {
+        private readonly MainViewModel _viewModel;
         private readonly ObservableCollection<BluetoothDeviceInfo> _devices = [];
         private BluetoothListener? _listener;
         private CancellationTokenSource? _cancellationTokenSource;
@@ -18,6 +22,8 @@ namespace ClipSyncWindows
         public MainWindow()
         {
             InitializeComponent();
+            _viewModel = new MainViewModel();
+            DataContext = _viewModel;
             DevicesListView.ItemsSource = _devices;
 
             RefreshDevicesButton.Click += RefreshDevicesButton_Click;
@@ -37,7 +43,7 @@ namespace ClipSyncWindows
 
         private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            ThemeManager.Instance.ToggleTheme();
+            _viewModel.ToggleTheme();
         }
 
         private void RefreshDevicesButton_Click(object sender, RoutedEventArgs e)
@@ -284,14 +290,5 @@ namespace ClipSyncWindows
 
             return string.Concat(text.AsSpan(0, maxLength), "...");
         }
-    }
-
-    public class ClipboardData
-    {
-        [JsonProperty("clip")]
-        public string Clip { get; set; } = string.Empty;
-
-        [JsonProperty("timestamp")]
-        public string Timestamp { get; set; } = string.Empty;
     }
 }
