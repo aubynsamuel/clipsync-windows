@@ -2,15 +2,10 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
+using ClipSyncWindows.Models;
 
-namespace ClipSyncWindows
+namespace ClipSyncWindows.Services
 {
-    public enum AppTheme
-    {
-        Light,
-        Dark
-    }
-
     public class ThemeManager : INotifyPropertyChanged
     {
         private static ThemeManager? _instance;
@@ -189,10 +184,5 @@ namespace ClipSyncWindows
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public class ThemeSettings
-    {
-        public AppTheme Theme { get; set; } = AppTheme.Light;
     }
 }

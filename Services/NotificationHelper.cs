@@ -1,3 +1,4 @@
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -5,7 +6,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using System.Windows.Media.Effects;
 
-namespace ClipSyncWindows
+namespace ClipSyncWindows.Services
 {
 
     public static class NotificationHelper
