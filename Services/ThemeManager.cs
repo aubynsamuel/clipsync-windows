@@ -53,70 +53,71 @@ namespace ClipSyncWindows.Services
 
         // Light Theme Colors
         public SolidColorBrush WindowBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(17, 24, 39))  // #111827
-            : new SolidColorBrush(Color.FromRgb(245, 247, 250)); // #F5F7FA
+            ? new SolidColorBrush(Color.FromRgb(18, 18, 18))    // md_dark_background
+            : new SolidColorBrush(Color.FromRgb(250, 250, 250)); // md_light_background
 
         public SolidColorBrush CardBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(31, 41, 55))  // #1F2937
-            : Brushes.White;
+            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))    // md_dark_surface
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_surface
 
         public SolidColorBrush ListBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(55, 65, 81))  // #374151
-            : new SolidColorBrush(Color.FromRgb(249, 250, 251)); // #F9FAFB
+            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))    // md_dark_surface
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_surface
 
         public SolidColorBrush ListItemBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(75, 85, 99))  // #4B5563
-            : Brushes.White;
+            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))    // md_dark_surface
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_surface
 
         public SolidColorBrush ListItemSelectedBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(59, 130, 246))  // #3B82F6
-            : new SolidColorBrush(Color.FromRgb(238, 242, 255)); // #EEF2FF
+            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))    // md_dark_primaryContainer
+            : new SolidColorBrush(Color.FromRgb(178, 223, 219)); // md_light_primaryContainer
 
         public SolidColorBrush ListItemHoverBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(107, 114, 128))  // #6B7280
-            : new SolidColorBrush(Color.FromRgb(249, 250, 251)); // #F9FAFB
+            ? new SolidColorBrush(Color.FromRgb(230, 81, 0))   // md_dark_secondaryContainer
+            : new SolidColorBrush(Color.FromRgb(255, 224, 178)); // md_light_secondaryContainer
 
         public SolidColorBrush BorderBrush => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(75, 85, 99))  // #4B5563
-            : new SolidColorBrush(Color.FromRgb(229, 231, 235)); // #E5E7EB
+            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))    // md_dark_primaryContainer
+            : new SolidColorBrush(Color.FromRgb(178, 223, 219)); // md_light_primaryContainer
 
         public SolidColorBrush ListItemSelectedBorder => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(59, 130, 246))  // #3B82F6
-            : new SolidColorBrush(Color.FromRgb(99, 102, 241)); // #6366F1
+            ? new SolidColorBrush(Color.FromRgb(72, 169, 153)) // md_dark_primary
+            : new SolidColorBrush(Color.FromRgb(0, 121, 107));  // md_light_primary
 
         public SolidColorBrush ListItemHoverBorder => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(107, 114, 128))  // #6B7280
-            : new SolidColorBrush(Color.FromRgb(209, 213, 219)); // #D1D5DB
+            ? new SolidColorBrush(Color.FromRgb(255, 173, 66)) // md_dark_secondary
+            : new SolidColorBrush(Color.FromRgb(245, 124, 0));  // md_light_secondary
 
         public SolidColorBrush PrimaryText => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(243, 244, 246))  // #F3F4F6
-            : new SolidColorBrush(Color.FromRgb(17, 24, 39)); // #111827
+            ? new SolidColorBrush(Color.FromRgb(230, 225, 229)) // md_dark_onBackground
+            : new SolidColorBrush(Color.FromRgb(28, 27, 31));   // md_light_onBackground
 
         public SolidColorBrush SecondaryText => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(156, 163, 175))  // #9CA3AF
-            : new SolidColorBrush(Color.FromRgb(107, 114, 128)); // #6B7280
+            ? new SolidColorBrush(Color.FromRgb(230, 225, 229)) // md_dark_onSurface
+            : new SolidColorBrush(Color.FromRgb(28, 27, 31));   // md_light_onSurface
 
         public SolidColorBrush StatusBarBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(55, 65, 81))  // #374151
-            : new SolidColorBrush(Color.FromRgb(243, 244, 246)); // #F3F4F6
+            ? new SolidColorBrush(Color.FromRgb(72, 169, 153)) // md_dark_primary
+            : new SolidColorBrush(Color.FromRgb(0, 121, 107));  // md_light_primary
 
         public SolidColorBrush IconBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(59, 130, 246))  // #3B82F6
-            : new SolidColorBrush(Color.FromRgb(238, 242, 255)); // #EEF2FF
+            ? new SolidColorBrush(Color.FromRgb(72, 169, 153)) // md_dark_primary
+            : new SolidColorBrush(Color.FromRgb(0, 121, 107));  // md_light_primary
 
         public SolidColorBrush IconForeground => IsDarkTheme
-            ? Brushes.White
-            : new SolidColorBrush(Color.FromRgb(99, 102, 241)); // #6366F1
+            ? new SolidColorBrush(Color.FromRgb(0, 56, 47))     // md_dark_onPrimary
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_onPrimary
 
         public LinearGradientBrush TitleGradient => IsDarkTheme
             ? new LinearGradientBrush(
-                Color.FromRgb(59, 130, 246),  // #3B82F6
-                Color.FromRgb(147, 51, 234),  // #9333EA
-                new Point(0, 0), new Point(1, 0))
+                Color.FromRgb(72, 169, 153),   // teal
+                Color.FromRgb(33, 150, 243),   // material blue
+               new Point(0, 0), new Point(1, 0))
             : new LinearGradientBrush(
-                Color.FromRgb(99, 102, 241),  // #6366F1
-                Color.FromRgb(139, 92, 246),  // #8B5CF6
+                Color.FromRgb(0, 121, 107),    // teal
+                Color.FromRgb(3, 169, 244),    // light blue
                 new Point(0, 0), new Point(1, 0));
+
 
         private void ApplyTheme()
         {

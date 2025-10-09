@@ -343,7 +343,7 @@
                             Name="StatusTextBlock"
                             VerticalAlignment="Center"
                             FontWeight="Medium"
-                            Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=PrimaryText}"
+                            Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=IconForeground}"
                             Text="Ready" />
                     </StackPanel>
 
