@@ -28,7 +28,8 @@
                             Padding="{TemplateBinding Padding}"
                             Background="{TemplateBinding Background}"
                             CornerRadius="6">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -73,8 +74,10 @@
         <Style x:Key="ThemeToggleButton" TargetType="Button">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="BorderBrush" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=BorderBrush}" />
-            <Setter Property="Foreground" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=SecondaryText}" />
+            <Setter Property="BorderBrush"
+                Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=BorderBrush}" />
+            <Setter Property="Foreground"
+                Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=SecondaryText}" />
             <Setter Property="Width" Value="40" />
             <Setter Property="Height" Value="40" />
             <Setter Property="Template">
@@ -85,11 +88,13 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="20">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
+                                <Setter Property="Background"
+                                    Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -176,7 +181,7 @@
                             Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=SecondaryText}"
                             Text="Seamless clipboard sharing across devices" />
                     </StackPanel>
-                    
+
                     <!-- Theme Toggle Button -->
                     <Button
                         x:Name="ThemeToggleButton"
@@ -186,7 +191,8 @@
                         ToolTip="Toggle Dark/Light Theme">
                         <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="16">
                             <TextBlock.Text>
-                                <Binding Source="{x:Static services:ThemeManager.Instance}" Path="IsDarkTheme">
+                                <Binding Source="{x:Static services:ThemeManager.Instance}"
+                                    Path="IsDarkTheme">
                                     <Binding.Converter>
                                         <converters:BoolToThemeIconConverter />
                                     </Binding.Converter>
@@ -224,23 +230,24 @@
                         Background="Transparent"
                         BorderThickness="0"
                         SelectionMode="Multiple"
-                        Style="{StaticResource SmoothScrollListView}">
+                        Style="{StaticResource SmoothScrollListView}"
+                        VirtualizingStackPanel.IsVirtualizing="True"
+                        VirtualizingStackPanel.VirtualizationMode="Recycling">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 <Setter Property="Padding" Value="5" />
                                 <Setter Property="Margin" Value="0,4" />
-                                <Setter Property="Background" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemBackground}" />
-                                <Setter Property="BorderThickness" Value="1" />
-                                <Setter Property="BorderBrush" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=BorderBrush}" />
+                                <Setter Property="Background"
+                                    Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemBackground}" />
                                 <Style.Triggers>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="Background" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemSelectedBackground}" />
-                                        <Setter Property="BorderBrush" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemSelectedBorder}" />
+                                        <Setter Property="Background"
+                                            Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemSelectedBackground}" />
                                     </Trigger>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
-                                        <Setter Property="BorderBrush" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBorder}" />
+                                        <Setter Property="Background"
+                                            Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
