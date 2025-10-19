@@ -108,6 +108,22 @@ namespace ClipSyncWindows.Services
             ? new SolidColorBrush(Color.FromRgb(0, 56, 47))     // md_dark_onPrimary
             : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_onPrimary
 
+        public SolidColorBrush StatusBarEllipseColor => IsDarkTheme
+            ? new SolidColorBrush(Color.FromRgb(230, 81, 0))
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+        public SolidColorBrush ShareButtonColor => IsDarkTheme
+            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))    // md_dark_primaryContainer
+            : new SolidColorBrush(Color.FromRgb(229, 247, 245)); // md_light_primaryContainer
+
+        public SolidColorBrush ShareButtonHoverColor => IsDarkTheme
+            ? new SolidColorBrush(Color.FromRgb(0, 51, 44))   // md_dark_secondaryContainer
+            : new SolidColorBrush(Color.FromRgb(210, 239, 236)); // md_light_secondaryContainer
+
+        public SolidColorBrush ShareButtonForegroundColor => IsDarkTheme
+            ? new SolidColorBrush(Color.FromRgb(229, 247, 245)) // md_dark_onPrimaryContainer
+            : new SolidColorBrush(Color.FromRgb(0, 77, 64));    // md_light_onPrimaryContainer
+
         public LinearGradientBrush TitleGradient => IsDarkTheme
             ? new LinearGradientBrush(
                 Color.FromRgb(72, 169, 153),   // teal
@@ -136,6 +152,10 @@ namespace ClipSyncWindows.Services
             OnPropertyChanged(nameof(StatusBarBackground));
             OnPropertyChanged(nameof(IconBackground));
             OnPropertyChanged(nameof(IconForeground));
+            OnPropertyChanged(nameof(StatusBarEllipseColor));
+            OnPropertyChanged(nameof(ShareButtonColor));
+            OnPropertyChanged(nameof(ShareButtonHoverColor));
+            OnPropertyChanged(nameof(ShareButtonForegroundColor));
             OnPropertyChanged(nameof(TitleGradient));
             OnPropertyChanged(nameof(IsDarkTheme));
         }

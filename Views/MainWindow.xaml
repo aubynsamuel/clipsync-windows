@@ -44,6 +44,21 @@
             </Setter>
         </Style>
 
+        <Style x:Key="ShareButtonStyle"
+            BasedOn="{StaticResource ModernButton}"
+            TargetType="Button">
+            <Setter Property="Background"
+                Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ShareButtonColor}" />
+            <Setter Property="Foreground"
+                Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ShareButtonForegroundColor}" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background"
+                        Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ShareButtonHoverColor}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style
             x:Key="RefreshButtonStyle"
             BasedOn="{StaticResource ModernButton}"
@@ -347,7 +362,7 @@
                             Height="10"
                             Margin="0,0,8,0"
                             VerticalAlignment="Center"
-                            Fill="#10B981" />
+                            Fill="{Binding Source={x:Static services:ThemeManager.Instance}, Path=StatusBarEllipseColor}" />
                         <TextBlock
                             Name="StatusTextBlock"
                             VerticalAlignment="Center"
@@ -361,7 +376,7 @@
                         Grid.Column="1"
                         Content="Share Clipboard"
                         IsEnabled="False"
-                        Style="{StaticResource ModernButton}" />
+                        Style="{StaticResource ShareButtonStyle}" />
                 </Grid>
             </Border>
         </Grid>
