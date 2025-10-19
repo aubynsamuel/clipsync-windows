@@ -2,251 +2,250 @@ name: Build and Release
 
 on:
   push:
-    branches: [ test ]
-    tags: [ 'v*' ]
+    branches: [test]
+    tags: ["v*"]
 
 env:
-  DOTNET_VERSION: '9.0.x'
-  PROJECT_FILE: 'ClipSyncWindows.csproj'
-  RUNTIME: 'win-x64'
+  DOTNET_VERSION: "9.0.x"
+  PROJECT_FILE: "ClipSyncWindows.csproj"
+  RUNTIME: "win-x64"
 
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Cache NuGet packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
-    
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.PROJECT_FILE }}
-    
-    - name: Build
-      run: dotnet build ${{ env.PROJECT_FILE }} --configuration Release --no-restore
-    
-    - name: Test
-      run: dotnet test ${{ env.PROJECT_FILE }} --no-build --verbosity normal --configuration Release
-    
-    - name: Publish application
-      run: dotnet publish ${{ env.PROJECT_FILE }} --configuration Release --output ./publish --self-contained true --runtime ${{ env.RUNTIME }}
-    
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ClipSync-Windows-${{ github.sha }}
-        path: ./publish/
-        retention-days: 30
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_FILE }}
+
+      - name: Build
+        run: dotnet build ${{ env.PROJECT_FILE }} --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test ${{ env.PROJECT_FILE }} --no-build --verbosity normal --configuration Release
+
+      - name: Publish application
+        run: dotnet publish ${{ env.PROJECT_FILE }} --configuration Release --output ./publish --self-contained true --runtime ${{ env.RUNTIME }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClipSync-Windows-${{ github.sha }}
+          path: ./publish/
+          retention-days: 30
 
   prepare-installer:
     needs: build
     runs-on: windows-latest
     if: github.ref == 'refs/heads/test' || startsWith(github.ref, 'refs/tags/v')
-    
+
     outputs:
       is-release: ${{ steps.check-release.outputs.is-release }}
       version: ${{ steps.get-version.outputs.version }}
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: ClipSync-Windows-${{ github.sha }}
-        path: ./publish/
-    
-    - name: Check if this is a release
-      id: check-release
-      run: |
-        if ("${{ github.ref }}" -like "refs/tags/v*") {
-          echo "is-release=true" >> $env:GITHUB_OUTPUT
-        } else {
-          echo "is-release=false" >> $env:GITHUB_OUTPUT
-        }
-    
-    - name: Get version
-      id: get-version
-      run: |
-        if ("${{ github.ref }}" -like "refs/tags/v*") {
-          $version = "${{ github.ref_name }}"
-          echo "version=$version" >> $env:GITHUB_OUTPUT
-        } else {
-          echo "version=test-${{ github.sha }}" >> $env:GITHUB_OUTPUT
-        }
-    
-    - name: Setup Inno Setup
-      run: |
-        try {
-          choco install innosetup -y --no-progress
-          Write-Host "Inno Setup installed successfully"
-        } catch {
-          Write-Error "Failed to install Inno Setup: $_"
-          exit 1
-        }
-    
-    - name: Verify Inno Setup installation
-      run: |
-        $innoPath = Get-Command "iscc.exe" -ErrorAction SilentlyContinue
-        if (-not $innoPath) {
-          Write-Error "Inno Setup not found in PATH"
-          exit 1
-        }
-        Write-Host "Inno Setup found at: $($innoPath.Source)"
-    
-    - name: Verify installer script exists
-      run: |
-        if (-not (Test-Path "InnoInstaller.iss")) {
-          Write-Error "InnoInstaller.iss not found in repository"
-          exit 1
-        }
-        Write-Host "Installer script found"
-    
-    - name: Update Inno Setup script
-      run: |
-        try {
-          $content = Get-Content "InnoInstaller.iss" -Raw -ErrorAction Stop
-          
-          # Update source path
-          $content = $content -replace 'Source: "publish\\\*"', 'Source: "publish\*"'
-          $content = $content -replace 'Source: "publish\\([^"]+)"', 'Source: "publish\$1"'
-          
-          # Update icon path if it exists
-          if ($content -match 'SetupIconFile=') {
-            $content = $content -replace 'SetupIconFile=publish\\([^"]*)', 'SetupIconFile=publish\$1'
-          }
-          
-          # Update version and filename for releases
-          if ("${{ steps.check-release.outputs.is-release }}" -eq "true") {
-            $version = "${{ steps.get-version.outputs.version }}"
-            $content = $content -replace '#define MyAppVersion "[^"]*"', "#define MyAppVersion `"$version`""
-            $content = $content -replace 'OutputBaseFilename=ClipSync_Setup', "OutputBaseFilename=ClipSync-Windows-$version-Setup"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ClipSync-Windows-${{ github.sha }}
+          path: ./publish/
+
+      - name: Check if this is a release
+        id: check-release
+        run: |
+          if ("${{ github.ref }}" -like "refs/tags/v*") {
+            echo "is-release=true" >> $env:GITHUB_OUTPUT
           } else {
-            # For test builds
-            $content = $content -replace 'OutputBaseFilename=ClipSync_Setup', 'OutputBaseFilename=ClipSync-Test-Setup'
+            echo "is-release=false" >> $env:GITHUB_OUTPUT
           }
-          
-          Set-Content "InnoInstaller.iss" $content -ErrorAction Stop
-          Write-Host "Installer script updated successfully"
-          
-          # Show the changes for debugging
-          Write-Host "Updated installer script content (first 10 lines):"
-          Get-Content "InnoInstaller.iss" | Select-Object -First 10 | ForEach-Object { Write-Host "  $_" }
-          
-        } catch {
-          Write-Error "Failed to update installer script: $_"
-          exit 1
-        }
-    
-    - name: Build installer
-      run: |
-        try {
-          iscc "InnoInstaller.iss"
-          Write-Host "Installer built successfully"
-          
-          # List generated files
-          Write-Host "Generated files:"
-          Get-ChildItem -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name)" }
-          
-        } catch {
-          Write-Error "Failed to build installer: $_"
-          exit 1
-        }
-    
-    - name: Upload installer artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ClipSync-Installer-${{ steps.get-version.outputs.version }}
-        path: "*.exe"
-        retention-days: 30
+
+      - name: Get version
+        id: get-version
+        run: |
+          if ("${{ github.ref }}" -like "refs/tags/v*") {
+            $version = "${{ github.ref_name }}"
+            echo "version=$version" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "version=test-${{ github.sha }}" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Setup Inno Setup
+        run: |
+          try {
+            choco install innosetup -y --no-progress
+            Write-Host "Inno Setup installed successfully"
+          } catch {
+            Write-Error "Failed to install Inno Setup: $_"
+            exit 1
+          }
+
+      - name: Verify Inno Setup installation
+        run: |
+          $innoPath = Get-Command "iscc.exe" -ErrorAction SilentlyContinue
+          if (-not $innoPath) {
+            Write-Error "Inno Setup not found in PATH"
+            exit 1
+          }
+          Write-Host "Inno Setup found at: $($innoPath.Source)"
+
+      - name: Verify installer script exists
+        run: |
+          if (-not (Test-Path "InnoInstaller.iss")) {
+            Write-Error "InnoInstaller.iss not found in repository"
+            exit 1
+          }
+          Write-Host "Installer script found"
+
+      - name: Update Inno Setup script
+        run: |
+          try {
+            $content = Get-Content "InnoInstaller.iss" -Raw -ErrorAction Stop
+            
+            # Update source path
+            $content = $content -replace 'Source: "publish\\\*"', 'Source: "publish\*"'
+            $content = $content -replace 'Source: "publish\\([^"]+)"', 'Source: "publish\$1"'
+            
+            # Update icon path if it exists
+            if ($content -match 'SetupIconFile=') {
+              $content = $content -replace 'SetupIconFile=publish\\([^"]*)', 'SetupIconFile=publish\$1'
+            }
+            
+            # Update version and filename for releases
+            if ("${{ steps.check-release.outputs.is-release }}" -eq "true") {
+              $version = "${{ steps.get-version.outputs.version }}"
+              $content = $content -replace '#define MyAppVersion "[^"]*"', "#define MyAppVersion `"$version`""
+              $content = $content -replace 'OutputBaseFilename=ClipSync_Setup', "OutputBaseFilename=ClipSync-Windows-$version-Setup"
+            } else {
+              # For test builds
+              $content = $content -replace 'OutputBaseFilename=ClipSync_Setup', 'OutputBaseFilename=ClipSync-Test-Setup'
+            }
+            
+            Set-Content "InnoInstaller.iss" $content -ErrorAction Stop
+            Write-Host "Installer script updated successfully"
+            
+            # Show the changes for debugging
+            Write-Host "Updated installer script content (first 10 lines):"
+            Get-Content "InnoInstaller.iss" | Select-Object -First 10 | ForEach-Object { Write-Host "  $_" }
+            
+          } catch {
+            Write-Error "Failed to update installer script: $_"
+            exit 1
+          }
+
+      - name: Build installer
+        run: |
+          try {
+            iscc "InnoInstaller.iss"
+            Write-Host "Installer built successfully"
+            
+            # List generated files
+            Write-Host "Generated files:"
+            Get-ChildItem -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name)" }
+            
+          } catch {
+            Write-Error "Failed to build installer: $_"
+            exit 1
+          }
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClipSync-Installer-${{ steps.get-version.outputs.version }}
+          path: "*.exe"
+          retention-days: 30
 
   test-release:
     needs: prepare-installer
     runs-on: windows-latest
     if: github.ref == 'refs/heads/test'
-    
+
     steps:
-    - name: Download installer
-      uses: actions/download-artifact@v4
-      with:
-        name: ClipSync-Installer-${{ needs.prepare-installer.outputs.version }}
-        path: ./
-    
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: ClipSync-Windows-${{ github.sha }}
-        path: ./publish/
-    
-    - name: Upload test release artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ClipSync-Test-Release-${{ github.sha }}
-        path: |
-          *.exe
-          ./publish/
-        retention-days: 7
+      - name: Download installer
+        uses: actions/download-artifact@v4
+        with:
+          name: ClipSync-Installer-${{ needs.prepare-installer.outputs.version }}
+          path: ./
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ClipSync-Windows-${{ github.sha }}
+          path: ./publish/
+
+      - name: Upload test release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClipSync-Test-Release-${{ github.sha }}
+          path: |
+            *.exe
+            ./publish/
+          retention-days: 7
 
   release:
     needs: prepare-installer
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/v')
-    
+
     steps:
-    - name: Download installer
-      uses: actions/download-artifact@v4
-      with:
-        name: ClipSync-Installer-${{ needs.prepare-installer.outputs.version }}
-        path: ./
-    
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: ClipSync-Windows-${{ github.sha }}
-        path: ./publish/
-    
-    - name: Create release archive
-      run: |
-        try {
-          Compress-Archive -Path ./publish/* -DestinationPath "ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}.zip" -ErrorAction Stop
-          Write-Host "Release archive created successfully"
-        } catch {
-          Write-Error "Failed to create release archive: $_"
-          exit 1
-        }
-    
-    - name: Verify release files
-      run: |
-        Write-Host "Release files:"
-        Get-ChildItem -Filter "ClipSync-Windows-*" | ForEach-Object { 
-          Write-Host "  $($_.Name) ($([math]::Round($_.Length / 1MB, 2)) MB)" 
-        }
-    
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        name: ClipSync Windows ${{ needs.prepare-installer.outputs.version }}
-        body: |
+      - name: Download installer
+        uses: actions/download-artifact@v4
+        with:
+          name: ClipSync-Installer-${{ needs.prepare-installer.outputs.version }}
+          path: ./
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ClipSync-Windows-${{ github.sha }}
+          path: ./publish/
 
-        files: |
-          ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}.zip
-          ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}-Setup.exe
-        draft: true
-        prerelease: false
-        generate_release_notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create release archive
+        run: |
+          try {
+            Compress-Archive -Path ./publish/* -DestinationPath "ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}.zip" -ErrorAction Stop
+            Write-Host "Release archive created successfully"
+          } catch {
+            Write-Error "Failed to create release archive: $_"
+            exit 1
+          }
+
+      - name: Verify release files
+        run: |
+          Write-Host "Release files:"
+          Get-ChildItem -Filter "ClipSync-Windows-*" | ForEach-Object { 
+            Write-Host "  $($_.Name) ($([math]::Round($_.Length / 1MB, 2)) MB)" 
+          }
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ClipSync Windows ${{ needs.prepare-installer.outputs.version }}
+          body: |
+
+          files: |
+            ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}.zip
+            ClipSync-Windows-${{ needs.prepare-installer.outputs.version }}-Setup.exe
+          draft: true
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
