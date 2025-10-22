@@ -8,7 +8,7 @@ using ClipSyncWindows.Models;
 using ClipSyncWindows.Services;
 using ClipSyncWindows.ViewModels;
 
-namespace ClipSyncWindows
+namespace ClipSyncWindows.Views
 {
     public partial class MainWindow : Window
     {

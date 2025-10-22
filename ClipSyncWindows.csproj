@@ -7,25 +7,26 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Assets/app.ico</ApplicationIcon>
-    
+
     <!-- Version Information -->
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
     <Version>1.0.0</Version>
-    
+
     <!-- Assembly Metadata -->
     <AssemblyTitle>ClipSync Windows</AssemblyTitle>
-    <AssemblyDescription>Cross-platform clipboard sharing application for Windows and Android devices via Bluetooth</AssemblyDescription>
+    <AssemblyDescription>Cross-platform clipboard sharing application for Windows and Android
+      devices via Bluetooth</AssemblyDescription>
     <AssemblyCompany>ClipSync</AssemblyCompany>
     <AssemblyProduct>ClipSync Windows</AssemblyProduct>
     <AssemblyCopyright>Copyright 2024 ClipSync. All rights reserved.</AssemblyCopyright>
     <AssemblyTrademark>ClipSync</AssemblyTrademark>
-    
+
     <!-- Application Properties -->
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Win32Resource />
     <StartupObject />
-    
+
     <!-- Build Configuration -->
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Deterministic>true</Deterministic>

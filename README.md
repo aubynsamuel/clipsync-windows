@@ -4,10 +4,11 @@
 
 # ClipSync
 
-A Windows app that enables **seamless clipboard sharing** between Windows computers and Android devices over *Bluetooth*. **No more emailing yourself text.** Copy on one device, paste on the other. *Instant. 100% offline*
+A Windows app that enables **seamless clipboard sharing** between Windows computers and Android devices over _Bluetooth_. **No more emailing yourself text.** Copy on one device, paste on the other. _Instant. 100% offline_
 
 [![Windows](https://img.shields.io/badge/Platform-Windows-green.svg)](https://github.com/aubynsamuel/clipsync-windows)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 </div>
 
 ## Demo/Screenshots
@@ -34,7 +35,7 @@ A Windows app that enables **seamless clipboard sharing** between Windows comput
 ### System Requirements
 
 - **OS**: Windows 10 / Windows 11
-- **Framework**: .NET 9.0 Runtime 
+- **Framework**: .NET 9.0 Runtime
 - **Bluetooth**: Bluetooth adapter
 
 ### Android Companion App
@@ -53,6 +54,7 @@ A Windows app that enables **seamless clipboard sharing** between Windows comput
 ### Option 2: Build from Source
 
 1. **Prerequisites**:
+
    - .NET SDK 9.0+
 
 2. **Clone and Build**:
