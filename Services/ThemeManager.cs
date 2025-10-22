@@ -13,25 +13,10 @@ namespace ClipSyncWindows.Services
 
         private AppTheme _currentTheme = AppTheme.Light;
 
-        private static string ThemeSettingsFile => GetThemeSettingsPath();
-
-        private static string GetThemeSettingsPath()
-        {
-            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var appFolder = Path.Combine(appDataPath, "ClipSync");
-
-            // Create directory if it doesn't exist
-            if (!Directory.Exists(appFolder))
-            {
-                Directory.CreateDirectory(appFolder);
-            }
-
-            return Path.Combine(appFolder, "theme_settings.json");
-        }
-
         private ThemeManager()
         {
-            LoadThemeSettings();
+            var settings = SettingsService.LoadSettings();
+            _currentTheme = settings.Theme;
         }
 
         public AppTheme CurrentTheme
@@ -44,7 +29,11 @@ namespace ClipSyncWindows.Services
                     _currentTheme = value;
                     OnPropertyChanged(nameof(CurrentTheme));
                     ApplyTheme();
-                    SaveThemeSettings();
+
+                    // Save the new theme setting
+                    var settings = SettingsService.LoadSettings();
+                    settings.Theme = _currentTheme;
+                    SettingsService.SaveSettings(settings);
                 }
             }
         }
@@ -165,39 +154,6 @@ namespace ClipSyncWindows.Services
             CurrentTheme = CurrentTheme == AppTheme.Light ? AppTheme.Dark : AppTheme.Light;
         }
 
-        private void LoadThemeSettings()
-        {
-            try
-            {
-                if (File.Exists(ThemeSettingsFile))
-                {
-                    var json = File.ReadAllText(ThemeSettingsFile);
-                    var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<ThemeSettings>(json);
-                    if (settings != null)
-                    {
-                        CurrentTheme = settings.Theme;
-                    }
-                }
-            }
-            catch
-            {
-                // If loading fails, stick with default light theme
-            }
-        }
-
-        private void SaveThemeSettings()
-        {
-            try
-            {
-                var settings = new ThemeSettings { Theme = CurrentTheme };
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
-                File.WriteAllText(ThemeSettingsFile, json);
-            }
-            catch
-            {
-                // Ignore save failures
-            }
-        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

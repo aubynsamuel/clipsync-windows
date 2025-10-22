@@ -1,5 +1,5 @@
 <Window
-    x:Class="ClipSyncWindows.MainWindow"
+    x:Class="ClipSyncWindows.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -198,23 +198,30 @@
                     </StackPanel>
 
                     <!-- Theme Toggle Button -->
-                    <Button
-                        x:Name="ThemeToggleButton"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Style="{StaticResource ThemeToggleButton}"
-                        ToolTip="Toggle Dark/Light Theme">
-                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="16">
-                            <TextBlock.Text>
-                                <Binding Source="{x:Static services:ThemeManager.Instance}"
-                                    Path="IsDarkTheme">
-                                    <Binding.Converter>
-                                        <converters:BoolToThemeIconConverter />
-                                    </Binding.Converter>
-                                </Binding>
-                            </TextBlock.Text>
-                        </TextBlock>
-                    </Button>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <Button
+                            x:Name="ThemeToggleButton"
+                            Style="{StaticResource ThemeToggleButton}"
+                            ToolTip="Toggle Dark/Light Theme">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="16">
+                                <TextBlock.Text>
+                                    <Binding Source="{x:Static services:ThemeManager.Instance}"
+                                        Path="IsDarkTheme">
+                                        <Binding.Converter>
+                                            <converters:BoolToThemeIconConverter />
+                                        </Binding.Converter>
+                                    </Binding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </Button>
+                        <Button
+                            x:Name="SettingsButton"
+                            Margin="5,0,0,0"
+                            Style="{StaticResource ThemeToggleButton}"
+                            ToolTip="Open Settings">
+                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="16"/>
+                        </Button>
+                    </StackPanel>
                 </Grid>
             </Border>
 

@@ -31,6 +31,7 @@ namespace ClipSyncWindows.Views
             StopServiceButton.Click += StopServiceButton_Click;
             ShareButton.Click += ShareButton_Click;
             ThemeToggleButton.Click += ThemeToggleButton_Click;
+            SettingsButton.Click += SettingsButton_Click;
 
             LoadPairedDevices();
 
@@ -44,6 +45,15 @@ namespace ClipSyncWindows.Views
         private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.ToggleTheme();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow
+            {
+                Owner = this
+            };
+            settingsWindow.ShowDialog();
         }
 
         private void RefreshDevicesButton_Click(object sender, RoutedEventArgs e)
