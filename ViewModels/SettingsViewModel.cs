@@ -13,6 +13,15 @@ namespace ClipSyncWindows.ViewModels
             _settings = SettingsService.LoadSettings();
         }
 
+        public static string AppVersion
+        {
+            get
+            {
+                var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                return version != null ? $"v{version.Major}.{version.Minor}.{version.Build}" : "v1.0.0";
+            }
+        }
+
         public AppTheme Theme
         {
             get => _settings.Theme;
