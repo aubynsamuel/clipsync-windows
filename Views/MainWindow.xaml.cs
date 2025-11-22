@@ -18,7 +18,7 @@ namespace ClipSyncWindows.Views
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _isServiceRunning = false;
         private static readonly Guid ServiceUuid = new("8ce255c0-200a-11e0-ac64-0800200c9a66");
-        
+
         // Clipboard monitoring for auto-sync
         private System.Windows.Threading.DispatcherTimer? _clipboardMonitorTimer;
         private string? _lastClipboardContent;
@@ -63,13 +63,8 @@ namespace ClipSyncWindows.Views
                 Interval = TimeSpan.FromMilliseconds(500)
             };
             _clipboardMonitorTimer.Tick += ClipboardMonitor_Tick;
-            
-            // Load settings and start monitoring if enabled
-            var settings = SettingsService.LoadSettings();
-            if (settings.AutoSyncEnabled)
-            {
-                _clipboardMonitorTimer.Start();
-            }
+
+            _clipboardMonitorTimer.Start();
         }
 
         private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
@@ -321,13 +316,9 @@ namespace ClipSyncWindows.Views
         private void ClipboardMonitor_Tick(object? sender, EventArgs e)
         {
             var settings = SettingsService.LoadSettings();
-            
-            // Stop monitoring if auto-sync is disabled
-            if (!settings.AutoSyncEnabled)
-            {
-                _clipboardMonitorTimer?.Stop();
-                return;
-            }
+
+            // Skip if auto-sync is disabled
+            if (!settings.AutoSyncEnabled) return;
 
             // Skip if we're currently receiving clipboard from another device
             if (_isReceivingClipboard) return;
@@ -340,7 +331,7 @@ namespace ClipSyncWindows.Views
                 if (!Clipboard.ContainsText()) return;
 
                 var currentClipboard = Clipboard.GetText();
-                
+
                 // Skip empty or whitespace-only content
                 if (string.IsNullOrWhiteSpace(currentClipboard)) return;
 

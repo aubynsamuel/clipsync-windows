@@ -46,9 +46,12 @@ namespace ClipSyncWindows.ViewModels
                     _settings.AutoSyncEnabled = value;
                     OnPropertyChanged(nameof(AutoSyncEnabled));
                     Save();
+                    AutoSyncChanged?.Invoke(this, value);
                 }
             }
         }
+
+        public event EventHandler<bool>? AutoSyncChanged;
 
         public void Save()
         {
