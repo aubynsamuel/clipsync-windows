@@ -6,7 +6,7 @@ namespace ClipSyncWindows.ViewModels
 {
     public class SettingsViewModel : INotifyPropertyChanged
     {
-        private AppSettings _settings;
+        private readonly AppSettings _settings;
 
         public SettingsViewModel()
         {

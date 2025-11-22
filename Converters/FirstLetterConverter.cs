@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -10,7 +9,7 @@ namespace ClipSyncWindows.Converters
         {
             if (value is string deviceName && !string.IsNullOrEmpty(deviceName))
             {
-                return deviceName.Substring(0, 1).ToUpper();
+                return deviceName[..1].ToUpper();
             }
             return string.Empty;
         }

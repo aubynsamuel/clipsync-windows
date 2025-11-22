@@ -1,4 +1,3 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -64,7 +63,8 @@ namespace ClipSyncWindows.Behaviors
 
         private static void ItemsControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var itemsControl = sender as ItemsControl;
+            if (sender is not ItemsControl itemsControl) return;
+
             var scrollViewer = GetScrollViewer(itemsControl);
             if (scrollViewer != null)
             {
@@ -74,7 +74,8 @@ namespace ClipSyncWindows.Behaviors
 
         private static void ItemsControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            var itemsControl = sender as ItemsControl;
+            if (sender is not ItemsControl itemsControl) return;
+
             var scrollViewer = GetScrollViewer(itemsControl);
             if (scrollViewer != null)
             {
@@ -82,8 +83,9 @@ namespace ClipSyncWindows.Behaviors
             }
         }
 
-        private static ScrollViewer GetScrollViewer(DependencyObject root)
+        private static ScrollViewer? GetScrollViewer(DependencyObject root)
         {
+            if (root == null) return null;
             if (root is ScrollViewer viewer) return viewer;
 
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
@@ -101,7 +103,7 @@ namespace ClipSyncWindows.Behaviors
         private static double _velocity = 0;
         private static double _currentVerticalOffset = 0;
         private static bool _isAnimating = false;
-        private static ScrollViewer _activeScrollViewer;
+        private static ScrollViewer? _activeScrollViewer;
         
         // Constants
         private const double Friction = 0.95; // Decay factor (0.0 to 1.0) - higher is more 'slippery'
@@ -110,8 +112,7 @@ namespace ClipSyncWindows.Behaviors
 
         private static void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var scrollViewer = sender as ScrollViewer;
-            if (scrollViewer == null) return;
+            if (sender is not ScrollViewer scrollViewer) return;
 
             e.Handled = true;
 
@@ -133,7 +134,7 @@ namespace ClipSyncWindows.Behaviors
             _velocity += deltaVelocity;
         }
 
-        private static void OnUpdate(object sender, EventArgs e)
+        private static void OnUpdate(object? sender, EventArgs e)
         {
             if (_activeScrollViewer == null || !_isAnimating)
             {
