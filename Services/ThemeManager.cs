@@ -62,20 +62,20 @@ namespace ClipSyncWindows.Services
             : new SolidColorBrush(Color.FromRgb(178, 223, 219));
 
         public SolidColorBrush ListItemHoverBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(230, 81, 0))
-            : new SolidColorBrush(Color.FromRgb(255, 224, 178));
+            ? new SolidColorBrush(Color.FromRgb(45, 45, 48)) // Subtle dark gray
+            : new SolidColorBrush(Color.FromRgb(243, 244, 246)); // Tailwind Gray-100
 
         public SolidColorBrush BorderBrush => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))
-            : new SolidColorBrush(Color.FromRgb(178, 223, 219));
+            ? new SolidColorBrush(Color.FromRgb(63, 63, 70)) // Zinc-700
+            : new SolidColorBrush(Color.FromRgb(229, 231, 235)); // Gray-200
 
         public SolidColorBrush ListItemSelectedBorder => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(72, 169, 153))
-            : new SolidColorBrush(Color.FromRgb(0, 121, 107));
+            ? new SolidColorBrush(Color.FromRgb(79, 70, 229)) // Indigo-600
+            : new SolidColorBrush(Color.FromRgb(99, 102, 241)); // Indigo-500
 
         public SolidColorBrush ListItemHoverBorder => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(255, 173, 66))
-            : new SolidColorBrush(Color.FromRgb(245, 124, 0));
+            ? new SolidColorBrush(Color.FromRgb(63, 63, 70))
+            : new SolidColorBrush(Color.FromRgb(209, 213, 219));
 
         public SolidColorBrush PrimaryText => IsDarkTheme
             ? new SolidColorBrush(Color.FromRgb(230, 225, 229))

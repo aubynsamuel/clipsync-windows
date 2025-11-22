@@ -292,20 +292,36 @@
                                     <Setter Property="Margin" Value="0,4" />
                                     <Setter Property="Background"
                                         Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemBackground}" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background"
-                                                Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemSelectedBackground}" />
-                                        </Trigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ScrollViewer}, Path=(behaviors:SmoothScrolling.IsScrolling)}" Value="False" />
-                                            </MultiDataTrigger.Conditions>
-                                            <Setter Property="Background"
-                                                Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListViewItem">
+                                                <Border x:Name="Bd" 
+                                                        Background="{TemplateBinding Background}" 
+                                                        BorderBrush="{TemplateBinding BorderBrush}" 
+                                                        BorderThickness="{TemplateBinding BorderThickness}" 
+                                                        Padding="{TemplateBinding Padding}" 
+                                                        CornerRadius="6" 
+                                                        SnapsToDevicePixels="true">
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <MultiTrigger>
+                                                        <MultiTrigger.Conditions>
+                                                            <Condition Property="IsMouseOver" Value="True"/>
+                                                            <Condition Property="behaviors:SmoothScrolling.IsScrolling" Value="False"/>
+                                                        </MultiTrigger.Conditions>
+                                                        <Setter TargetName="Bd" Property="Background" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBackground}"/>
+                                                    </MultiTrigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="Bd" Property="Background" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemSelectedBackground}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.Template>
