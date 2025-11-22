@@ -33,11 +33,47 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Settings" 
-                       FontSize="24" 
-                       FontWeight="Bold" 
-                       Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=PrimaryText}"
-                       Margin="0,0,0,20"/>
+            <Grid Grid.Row="0" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Text="Settings" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=PrimaryText}"/>
+
+                <Button Grid.Column="1"
+                        Content="✕"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=SecondaryText}"
+                        Cursor="Hand"
+                        ToolTip="Close Settings"
+                        Command="{Binding DataContext.CloseSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=PrimaryText}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
 
             <StackPanel Grid.Row="1">
                 <TextBlock Text="Theme" 
@@ -50,10 +86,8 @@
                           Margin="0,0,0,20"/>
             </StackPanel>
 
-            <!-- Close button will be handled by MainWindow, but we can have a back button if needed, 
-                 or just rely on clicking outside. For now, let's just show version info at bottom -->
             <TextBlock Grid.Row="2" 
-                       Text="ClipSync v1.0.0" 
+                       Text="{Binding AppVersion, StringFormat='ClipSync {0}'}" 
                        HorizontalAlignment="Center" 
                        Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=SecondaryText}"
                        Opacity="0.6"/>

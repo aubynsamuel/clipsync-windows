@@ -23,6 +23,7 @@ namespace ClipSyncWindows.Views
         {
             InitializeComponent();
             _viewModel = new MainViewModel();
+            _viewModel.CloseSettingsRequested += (s, e) => CloseSettings();
             DataContext = _viewModel;
             DevicesListView.ItemsSource = _devices;
 
@@ -32,7 +33,6 @@ namespace ClipSyncWindows.Views
             ShareButton.Click += ShareButton_Click;
             ThemeToggleButton.Click += ThemeToggleButton_Click;
             SettingsButton.Click += SettingsButton_Click;
-            // SettingsOverlay.MouseDown is handled in XAML
 
             LoadPairedDevices();
 
@@ -40,6 +40,15 @@ namespace ClipSyncWindows.Views
             DevicesListView.SelectionChanged += (s, e) =>
             {
                 ShareButton.IsEnabled = DevicesListView.SelectedItems.Count > 0;
+            };
+
+            // Handle Escape key to close settings
+            PreviewKeyDown += (s, e) =>
+            {
+                if (e.Key == System.Windows.Input.Key.Escape && SettingsOverlay.Visibility == Visibility.Visible)
+                {
+                    CloseSettings();
+                }
             };
         }
 
@@ -59,9 +68,14 @@ namespace ClipSyncWindows.Views
             // Only close if clicking the overlay background, not the sidebar itself
             if (e.OriginalSource == sender)
             {
-                var storyboard = (System.Windows.Media.Animation.Storyboard)FindResource("CloseSettingsStoryboard");
-                storyboard.Begin();
+                CloseSettings();
             }
+        }
+
+        private void CloseSettings()
+        {
+            var storyboard = (System.Windows.Media.Animation.Storyboard)FindResource("CloseSettingsStoryboard");
+            storyboard.Begin();
         }
 
         private void RefreshDevicesButton_Click(object sender, RoutedEventArgs e)

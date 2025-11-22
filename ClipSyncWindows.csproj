@@ -9,9 +9,9 @@
     <ApplicationIcon>Assets/app.ico</ApplicationIcon>
 
     <!-- Version Information -->
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
-    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <FileVersion>1.0.2.0</FileVersion>
+    <Version>1.0.2</Version>
 
     <!-- Assembly Metadata -->
     <AssemblyTitle>ClipSync Windows</AssemblyTitle>
@@ -19,7 +19,7 @@
       devices via Bluetooth</AssemblyDescription>
     <AssemblyCompany>ClipSync</AssemblyCompany>
     <AssemblyProduct>ClipSync Windows</AssemblyProduct>
-    <AssemblyCopyright>Copyright 2024 ClipSync. All rights reserved.</AssemblyCopyright>
+    <AssemblyCopyright>Copyright 2025 ClipSync. All rights reserved.</AssemblyCopyright>
     <AssemblyTrademark>ClipSync</AssemblyTrademark>
 
     <!-- Application Properties -->
