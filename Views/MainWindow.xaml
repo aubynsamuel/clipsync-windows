@@ -8,6 +8,7 @@
     xmlns:services="clr-namespace:ClipSyncWindows.Services"
     xmlns:converters="clr-namespace:ClipSyncWindows.Converters"
     xmlns:views="clr-namespace:ClipSyncWindows.Views"
+    xmlns:behaviors="clr-namespace:ClipSyncWindows.Behaviors"
     Title="ClipSync"
     Width="550"
     Icon="..\Assets\app.ico"
@@ -280,6 +281,7 @@
                             Background="Transparent"
                             BorderThickness="0"
                             SelectionMode="Multiple"
+                            behaviors:SmoothScrolling.EnableSmoothScrolling="True"
                             Style="{StaticResource SmoothScrollListView}"
                             VirtualizingStackPanel.IsVirtualizing="True"
                             VirtualizingStackPanel.VirtualizationMode="Recycling">
@@ -295,16 +297,21 @@
                                             <Setter Property="Background"
                                                 Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemSelectedBackground}" />
                                         </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
+                                                <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=ScrollViewer}, Path=(behaviors:SmoothScrolling.IsScrolling)}" Value="False" />
+                                            </MultiDataTrigger.Conditions>
                                             <Setter Property="Background"
                                                 Value="{Binding Source={x:Static services:ThemeManager.Instance}, Path=ListItemHoverBackground}" />
-                                        </Trigger>
+                                        </MultiDataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </ListView.ItemContainerStyle>
                             <ListView.Template>
                                 <ControlTemplate TargetType="ListView">
                                     <ScrollViewer
+                                        x:Name="PART_ScrollViewer"
                                         Padding="{TemplateBinding Padding}"
                                         Focusable="False"
                                         Style="{StaticResource SmoothScrollViewer}">
