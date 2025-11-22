@@ -18,6 +18,12 @@ namespace ClipSyncWindows.Views
         private CancellationTokenSource? _cancellationTokenSource;
         private bool _isServiceRunning = false;
         private static readonly Guid ServiceUuid = new("8ce255c0-200a-11e0-ac64-0800200c9a66");
+        
+        // Clipboard monitoring for auto-sync
+        private System.Windows.Threading.DispatcherTimer? _clipboardMonitorTimer;
+        private string? _lastClipboardContent;
+        private DateTime _lastAutoSyncTime = DateTime.MinValue;
+        private bool _isReceivingClipboard = false;
 
         public MainWindow()
         {
@@ -50,6 +56,20 @@ namespace ClipSyncWindows.Views
                     CloseSettings();
                 }
             };
+
+            // Initialize clipboard monitoring timer
+            _clipboardMonitorTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            _clipboardMonitorTimer.Tick += ClipboardMonitor_Tick;
+            
+            // Load settings and start monitoring if enabled
+            var settings = SettingsService.LoadSettings();
+            if (settings.AutoSyncEnabled)
+            {
+                _clipboardMonitorTimer.Start();
+            }
         }
 
         private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
@@ -199,9 +219,12 @@ namespace ClipSyncWindows.Views
                         {
                             Dispatcher.Invoke(() =>
                             {
+                                _isReceivingClipboard = true;
                                 Clipboard.SetText(clipboardData.Clip);
+                                _lastClipboardContent = clipboardData.Clip;
                                 StatusTextBlock.Text = "Received clipboard text & copied!";
                                 NotificationHelper.ShowSimpleNotification("ClipSync", $"ClipText Received: \n {TruncateText(clipboardData.Clip, 50)}");
+                                _isReceivingClipboard = false;
                             });
                         }
                     }
@@ -292,6 +315,98 @@ namespace ClipSyncWindows.Views
             if (successCount > 0)
             {
                 StatusTextBlock.Text = $"Clipboard shared with {successCount}/{selectedDevices.Count} devices";
+            }
+        }
+
+        private void ClipboardMonitor_Tick(object? sender, EventArgs e)
+        {
+            var settings = SettingsService.LoadSettings();
+            
+            // Stop monitoring if auto-sync is disabled
+            if (!settings.AutoSyncEnabled)
+            {
+                _clipboardMonitorTimer?.Stop();
+                return;
+            }
+
+            // Skip if we're currently receiving clipboard from another device
+            if (_isReceivingClipboard) return;
+
+            // Skip if no devices are selected
+            if (DevicesListView.SelectedItems.Count == 0) return;
+
+            try
+            {
+                if (!Clipboard.ContainsText()) return;
+
+                var currentClipboard = Clipboard.GetText();
+                
+                // Skip empty or whitespace-only content
+                if (string.IsNullOrWhiteSpace(currentClipboard)) return;
+
+                // Check if clipboard has changed
+                if (currentClipboard != _lastClipboardContent)
+                {
+                    // Debounce: ensure at least 500ms since last auto-sync
+                    var timeSinceLastSync = DateTime.Now - _lastAutoSyncTime;
+                    if (timeSinceLastSync.TotalMilliseconds >= 500)
+                    {
+                        _lastClipboardContent = currentClipboard;
+                        _lastAutoSyncTime = DateTime.Now;
+                        _ = AutoSyncClipboard(currentClipboard);
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore clipboard access errors
+            }
+        }
+
+        private async Task AutoSyncClipboard(string clipboardText)
+        {
+            var selectedDevices = DevicesListView.SelectedItems.Cast<BluetoothDeviceInfo>().ToList();
+            int successCount = 0;
+
+            foreach (var device in selectedDevices)
+            {
+                try
+                {
+                    var clipData = new ClipboardData
+                    {
+                        Clip = clipboardText,
+                        Timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString()
+                    };
+
+                    var jsonData = JsonConvert.SerializeObject(clipData);
+
+                    await Task.Run(() =>
+                    {
+                        using var client = new BluetoothClient();
+                        client.Connect(device.DeviceAddress, ServiceUuid);
+
+                        using var stream = client.GetStream();
+                        using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
+
+                        writer.Write(jsonData + "\n");
+                        Thread.Sleep(500);
+                        client.Close();
+                    });
+
+                    successCount++;
+                }
+                catch
+                {
+                    // Silently fail for auto-sync
+                }
+            }
+
+            if (successCount > 0)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    StatusTextBlock.Text = $"Auto-synced to {successCount}/{selectedDevices.Count} device(s)";
+                });
             }
         }
 

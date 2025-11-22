@@ -36,6 +36,20 @@ namespace ClipSyncWindows.ViewModels
             }
         }
 
+        public bool AutoSyncEnabled
+        {
+            get => _settings.AutoSyncEnabled;
+            set
+            {
+                if (_settings.AutoSyncEnabled != value)
+                {
+                    _settings.AutoSyncEnabled = value;
+                    OnPropertyChanged(nameof(AutoSyncEnabled));
+                    Save();
+                }
+            }
+        }
+
         public void Save()
         {
             SettingsService.SaveSettings(_settings);
