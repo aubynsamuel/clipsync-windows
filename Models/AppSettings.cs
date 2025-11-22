@@ -1,7 +1,6 @@
-
 namespace ClipSyncWindows.Models
 {
-    public class ThemeSettings
+    public class AppSettings
     {
         public AppTheme Theme { get; set; } = AppTheme.Light;
     }

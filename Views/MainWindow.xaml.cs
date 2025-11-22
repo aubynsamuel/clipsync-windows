@@ -8,7 +8,7 @@ using ClipSyncWindows.Models;
 using ClipSyncWindows.Services;
 using ClipSyncWindows.ViewModels;
 
-namespace ClipSyncWindows
+namespace ClipSyncWindows.Views
 {
     public partial class MainWindow : Window
     {
@@ -31,6 +31,8 @@ namespace ClipSyncWindows
             StopServiceButton.Click += StopServiceButton_Click;
             ShareButton.Click += ShareButton_Click;
             ThemeToggleButton.Click += ThemeToggleButton_Click;
+            SettingsButton.Click += SettingsButton_Click;
+            // SettingsOverlay.MouseDown is handled in XAML
 
             LoadPairedDevices();
 
@@ -44,6 +46,22 @@ namespace ClipSyncWindows
         private void ThemeToggleButton_Click(object sender, RoutedEventArgs e)
         {
             _viewModel.ToggleTheme();
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            var storyboard = (System.Windows.Media.Animation.Storyboard)FindResource("OpenSettingsStoryboard");
+            storyboard.Begin();
+        }
+
+        private void SettingsOverlay_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Only close if clicking the overlay background, not the sidebar itself
+            if (e.OriginalSource == sender)
+            {
+                var storyboard = (System.Windows.Media.Animation.Storyboard)FindResource("CloseSettingsStoryboard");
+                storyboard.Begin();
+            }
         }
 
         private void RefreshDevicesButton_Click(object sender, RoutedEventArgs e)
@@ -77,14 +95,10 @@ namespace ClipSyncWindows
 
         private async void StartServiceButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_isServiceRunning)
-            {
-                return;
-            }
+            if (_isServiceRunning) return;
 
             try
             {
-                // Configure buttons
                 StartServiceButton.IsEnabled = false;
                 RefreshDevicesButton.IsEnabled = false;
                 StopServiceButton.IsEnabled = true;
@@ -94,20 +108,15 @@ namespace ClipSyncWindows
                 _cancellationTokenSource = new CancellationTokenSource();
                 var token = _cancellationTokenSource.Token;
 
-                // Start listener
                 _listener = new BluetoothListener(ServiceUuid);
                 _listener.Start();
                 _isServiceRunning = true;
 
                 StatusTextBlock.Text = "Service: Listening for bluetooth devices...";
 
-                // Run listening loop on a separate task
                 await Task.Run(() => ListeningLoop(token), token);
             }
-            catch (OperationCanceledException)
-            {
-                // Normal cancellation, do nothing
-            }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error starting Bluetooth service: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -151,7 +160,6 @@ namespace ClipSyncWindows
             {
                 try
                 {
-                    // Null check before accepting
                     if (_listener == null)
                     {
                         Thread.Sleep(1000);
@@ -167,7 +175,6 @@ namespace ClipSyncWindows
                     using var stream = client.GetStream();
                     using var reader = new StreamReader(stream);
 
-                    // Read the JSON message
                     var jsonText = reader.ReadLine() ?? "";
 
                     try
@@ -180,15 +187,12 @@ namespace ClipSyncWindows
                             {
                                 Clipboard.SetText(clipboardData.Clip);
                                 StatusTextBlock.Text = "Received clipboard text & copied!";
-
-                                // Instead of using WinForms notification, use a simpler approach
                                 NotificationHelper.ShowSimpleNotification("ClipSync", $"ClipText Received: \n {TruncateText(clipboardData.Clip, 50)}");
                             });
                         }
                     }
                     catch (JsonException)
                     {
-                        // If JSON parsing fails, try using the text directly
                         if (!string.IsNullOrEmpty(jsonText))
                         {
                             Dispatcher.Invoke(() =>
@@ -207,8 +211,6 @@ namespace ClipSyncWindows
                         {
                             StatusTextBlock.Text = $"Listener error: {ex.Message}";
                         });
-
-                        // Short delay before retrying
                         Thread.Sleep(1000);
                     }
                 }
@@ -240,7 +242,6 @@ namespace ClipSyncWindows
             {
                 try
                 {
-                    // Create JSON message matching the Android app's format
                     var clipData = new ClipboardData
                     {
                         Clip = clipboardText,
@@ -249,7 +250,6 @@ namespace ClipSyncWindows
 
                     var jsonData = JsonConvert.SerializeObject(clipData);
 
-                    // Send data
                     await Task.Run(() =>
                     {
                         using var client = new BluetoothClient();
@@ -259,9 +259,7 @@ namespace ClipSyncWindows
                         using var writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
 
                         writer.Write(jsonData + "\n");
-
                         Thread.Sleep(500);
-
                         client.Close();
                     });
 

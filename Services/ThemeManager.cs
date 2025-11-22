@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using ClipSyncWindows.Models;
@@ -13,25 +12,10 @@ namespace ClipSyncWindows.Services
 
         private AppTheme _currentTheme = AppTheme.Light;
 
-        private static string ThemeSettingsFile => GetThemeSettingsPath();
-
-        private static string GetThemeSettingsPath()
-        {
-            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var appFolder = Path.Combine(appDataPath, "ClipSync");
-
-            // Create directory if it doesn't exist
-            if (!Directory.Exists(appFolder))
-            {
-                Directory.CreateDirectory(appFolder);
-            }
-
-            return Path.Combine(appFolder, "theme_settings.json");
-        }
-
         private ThemeManager()
         {
-            LoadThemeSettings();
+            var settings = SettingsService.LoadSettings();
+            _currentTheme = settings.Theme;
         }
 
         public AppTheme CurrentTheme
@@ -44,7 +28,11 @@ namespace ClipSyncWindows.Services
                     _currentTheme = value;
                     OnPropertyChanged(nameof(CurrentTheme));
                     ApplyTheme();
-                    SaveThemeSettings();
+
+                    // Save the new theme setting
+                    var settings = SettingsService.LoadSettings();
+                    settings.Theme = _currentTheme;
+                    SettingsService.SaveSettings(settings);
                 }
             }
         }
@@ -53,85 +41,85 @@ namespace ClipSyncWindows.Services
 
         // Light Theme Colors
         public SolidColorBrush WindowBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(18, 18, 18))    // md_dark_background
-            : new SolidColorBrush(Color.FromRgb(250, 250, 250)); // md_light_background
+            ? new SolidColorBrush(Color.FromRgb(18, 18, 18))
+            : new SolidColorBrush(Color.FromRgb(250, 250, 250));
 
         public SolidColorBrush CardBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))    // md_dark_surface
-            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_surface
+            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
         public SolidColorBrush ListBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))    // md_dark_surface
-            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_surface
+            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
         public SolidColorBrush ListItemBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))    // md_dark_surface
-            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_surface
+            ? new SolidColorBrush(Color.FromRgb(30, 30, 30))
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
         public SolidColorBrush ListItemSelectedBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))    // md_dark_primaryContainer
-            : new SolidColorBrush(Color.FromRgb(178, 223, 219)); // md_light_primaryContainer
+            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))
+            : new SolidColorBrush(Color.FromRgb(178, 223, 219));
 
         public SolidColorBrush ListItemHoverBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(230, 81, 0))   // md_dark_secondaryContainer
-            : new SolidColorBrush(Color.FromRgb(255, 224, 178)); // md_light_secondaryContainer
+            ? new SolidColorBrush(Color.FromRgb(45, 45, 48)) // Subtle dark gray
+            : new SolidColorBrush(Color.FromRgb(243, 244, 246)); // Tailwind Gray-100
 
         public SolidColorBrush BorderBrush => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))    // md_dark_primaryContainer
-            : new SolidColorBrush(Color.FromRgb(178, 223, 219)); // md_light_primaryContainer
+            ? new SolidColorBrush(Color.FromRgb(63, 63, 70)) // Zinc-700
+            : new SolidColorBrush(Color.FromRgb(229, 231, 235)); // Gray-200
 
         public SolidColorBrush ListItemSelectedBorder => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(72, 169, 153)) // md_dark_primary
-            : new SolidColorBrush(Color.FromRgb(0, 121, 107));  // md_light_primary
+            ? new SolidColorBrush(Color.FromRgb(79, 70, 229)) // Indigo-600
+            : new SolidColorBrush(Color.FromRgb(99, 102, 241)); // Indigo-500
 
         public SolidColorBrush ListItemHoverBorder => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(255, 173, 66)) // md_dark_secondary
-            : new SolidColorBrush(Color.FromRgb(245, 124, 0));  // md_light_secondary
+            ? new SolidColorBrush(Color.FromRgb(63, 63, 70))
+            : new SolidColorBrush(Color.FromRgb(209, 213, 219));
 
         public SolidColorBrush PrimaryText => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(230, 225, 229)) // md_dark_onBackground
-            : new SolidColorBrush(Color.FromRgb(28, 27, 31));   // md_light_onBackground
+            ? new SolidColorBrush(Color.FromRgb(230, 225, 229))
+            : new SolidColorBrush(Color.FromRgb(28, 27, 31));
 
         public SolidColorBrush SecondaryText => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(230, 225, 229)) // md_dark_onSurface
-            : new SolidColorBrush(Color.FromRgb(28, 27, 31));   // md_light_onSurface
+            ? new SolidColorBrush(Color.FromRgb(230, 225, 229))
+            : new SolidColorBrush(Color.FromRgb(28, 27, 31));
 
         public SolidColorBrush StatusBarBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(72, 169, 153)) // md_dark_primary
-            : new SolidColorBrush(Color.FromRgb(0, 121, 107));  // md_light_primary
+            ? new SolidColorBrush(Color.FromRgb(72, 169, 153))
+            : new SolidColorBrush(Color.FromRgb(0, 121, 107));
 
         public SolidColorBrush IconBackground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(72, 169, 153)) // md_dark_primary
-            : new SolidColorBrush(Color.FromRgb(0, 121, 107));  // md_light_primary
+            ? new SolidColorBrush(Color.FromRgb(72, 169, 153))
+            : new SolidColorBrush(Color.FromRgb(0, 121, 107));
 
         public SolidColorBrush IconForeground => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(0, 56, 47))     // md_dark_onPrimary
-            : new SolidColorBrush(Color.FromRgb(255, 255, 255)); // md_light_onPrimary
+            ? new SolidColorBrush(Color.FromRgb(0, 56, 47))
+            : new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
         public SolidColorBrush StatusBarEllipseColor => IsDarkTheme
             ? new SolidColorBrush(Color.FromRgb(230, 81, 0))
             : new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
         public SolidColorBrush ShareButtonColor => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))    // md_dark_primaryContainer
-            : new SolidColorBrush(Color.FromRgb(229, 247, 245)); // md_light_primaryContainer
+            ? new SolidColorBrush(Color.FromRgb(0, 77, 64))
+            : new SolidColorBrush(Color.FromRgb(229, 247, 245));
 
         public SolidColorBrush ShareButtonHoverColor => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(0, 51, 44))   // md_dark_secondaryContainer
-            : new SolidColorBrush(Color.FromRgb(210, 239, 236)); // md_light_secondaryContainer
+            ? new SolidColorBrush(Color.FromRgb(0, 51, 44))
+            : new SolidColorBrush(Color.FromRgb(210, 239, 236));
 
         public SolidColorBrush ShareButtonForegroundColor => IsDarkTheme
-            ? new SolidColorBrush(Color.FromRgb(229, 247, 245)) // md_dark_onPrimaryContainer
-            : new SolidColorBrush(Color.FromRgb(0, 77, 64));    // md_light_onPrimaryContainer
+            ? new SolidColorBrush(Color.FromRgb(229, 247, 245))
+            : new SolidColorBrush(Color.FromRgb(0, 77, 64));
 
         public LinearGradientBrush TitleGradient => IsDarkTheme
             ? new LinearGradientBrush(
-                Color.FromRgb(72, 169, 153),   // teal
-                Color.FromRgb(33, 150, 243),   // material blue
+                Color.FromRgb(72, 169, 153),
+                Color.FromRgb(33, 150, 243),
                new Point(0, 0), new Point(1, 0))
             : new LinearGradientBrush(
-                Color.FromRgb(0, 121, 107),    // teal
-                Color.FromRgb(3, 169, 244),    // light blue
+                Color.FromRgb(0, 121, 107),
+                Color.FromRgb(3, 169, 244),
                 new Point(0, 0), new Point(1, 0));
 
 
@@ -165,39 +153,6 @@ namespace ClipSyncWindows.Services
             CurrentTheme = CurrentTheme == AppTheme.Light ? AppTheme.Dark : AppTheme.Light;
         }
 
-        private void LoadThemeSettings()
-        {
-            try
-            {
-                if (File.Exists(ThemeSettingsFile))
-                {
-                    var json = File.ReadAllText(ThemeSettingsFile);
-                    var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<ThemeSettings>(json);
-                    if (settings != null)
-                    {
-                        CurrentTheme = settings.Theme;
-                    }
-                }
-            }
-            catch
-            {
-                // If loading fails, stick with default light theme
-            }
-        }
-
-        private void SaveThemeSettings()
-        {
-            try
-            {
-                var settings = new ThemeSettings { Theme = CurrentTheme };
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(settings);
-                File.WriteAllText(ThemeSettingsFile, json);
-            }
-            catch
-            {
-                // Ignore save failures
-            }
-        }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

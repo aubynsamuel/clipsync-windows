@@ -1,0 +1,62 @@
+<UserControl x:Class="ClipSyncWindows.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ClipSyncWindows.Views"
+             xmlns:viewModels="clr-namespace:ClipSyncWindows.ViewModels"
+             xmlns:models="clr-namespace:ClipSyncWindows.Models"
+             xmlns:services="clr-namespace:ClipSyncWindows.Services"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="300">
+    
+    <UserControl.DataContext>
+        <viewModels:SettingsViewModel/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ObjectDataProvider x:Key="ThemeEnumValues" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="models:AppTheme"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>
+
+    <Border Background="{Binding Source={x:Static services:ThemeManager.Instance}, Path=CardBackground}" 
+            BorderBrush="{Binding Source={x:Static services:ThemeManager.Instance}, Path=BorderBrush}"
+            BorderThickness="1,0,0,0">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Settings" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=PrimaryText}"
+                       Margin="0,0,0,20"/>
+
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Theme" 
+                           FontWeight="SemiBold" 
+                           Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=SecondaryText}"
+                           Margin="0,0,0,8"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource ThemeEnumValues}}" 
+                          SelectedItem="{Binding Theme}"
+                          Padding="10,8"
+                          Margin="0,0,0,20"/>
+            </StackPanel>
+
+            <!-- Close button will be handled by MainWindow, but we can have a back button if needed, 
+                 or just rely on clicking outside. For now, let's just show version info at bottom -->
+            <TextBlock Grid.Row="2" 
+                       Text="ClipSync v1.0.0" 
+                       HorizontalAlignment="Center" 
+                       Foreground="{Binding Source={x:Static services:ThemeManager.Instance}, Path=SecondaryText}"
+                       Opacity="0.6"/>
+        </Grid>
+    </Border>
+</UserControl>

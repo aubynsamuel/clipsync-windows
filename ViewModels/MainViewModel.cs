@@ -1,4 +1,3 @@
-
 using ClipSyncWindows.Services;
 using System.ComponentModel;
 
