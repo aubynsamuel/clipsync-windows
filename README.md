@@ -23,6 +23,7 @@ A Windows app that enables **seamless clipboard sharing** between Windows comput
 
 ## 🚀 Features
 
+- **Auto-Sync Clipboard**: Automatically sends copied content to selected devices when enabled
 - **Cross-Platform Clipboard Sharing**: Share clipboard text between Windows and Android devices
 - **Real-time Sharing**: Instant clipboard sharing between devices
 - **Multi-Device Support**: Connect and share with multiple devices simultaneously
@@ -90,10 +91,17 @@ A Windows app that enables **seamless clipboard sharing** between Windows comput
 
 #### Sharing from Windows to Android
 
+**Manual Sharing:**
 1. Open the Android app and press Start to listen on Android
 2. Copy any text to your Windows clipboard
 3. Select target device(s) from the devices list
 4. Click **"Share Clipboard"** to send content to selected devices
+
+**Auto-Sync (New in v1.2.0):**
+1. Open Settings and enable **"Auto-Sync Clipboard"**
+2. Select target device(s) from the devices list
+3. Any text you copy will automatically be sent to selected devices
+4. No need to click "Share Clipboard" manually
 
 #### Receiving
 
